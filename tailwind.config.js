@@ -105,9 +105,9 @@ export default {
           "100": "#B9C3D3",
           "50": "#E3E7ED",
         },
-        "neutral-black": "#000000",
-        "neutral-white": "#FFFFFF",
-        "neutral-gray": "#929292",
+        "netral-black": "#000000",
+        "netral-white": "#FFFFFF",
+        "netral-gray": "#929292",
         "black": "#111313",
         "low-emphasis": "1F2121",
         "medium-emphasis": "#4F5050",
@@ -121,7 +121,14 @@ export default {
     fontFamily: {
       "roboto": "Roboto, sans-serif",
       "lato": "Lato, sans-serif"
+    },
+    gridTemplateColumns:{
+      sidebar:"360px auto"
+    },
+    gridTemplateRows:{
+      header:"64px auto"
     }
+
   },
   plugins: [require('flowbite/plugin')],
 }

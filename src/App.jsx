@@ -1,14 +1,14 @@
 import React from "react";
-import Login from "./Pages/Login";
+import Login from "./Pages/LogIn";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
-import Dashboard from "./Pages/Admin/Dashboard";
+import LayoutAdmin from "./Pages/Admin/LayoutAdmin";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route exact path="/login" element={<Login />}></Route>
-        <Route path="/dashboard" element={<Dashboard />}></Route>
+        <Route path="/admin/*" element={<LayoutAdmin />}></Route>
       </Routes>
     </BrowserRouter>
   );
