@@ -7,6 +7,7 @@ import Pengajuan from "./Pages/Pengajuan";
 import Laporan from "./Pages/Laporan";
 import Status from "./Pages/Status";
 import Akun from "./Pages/Akun";
+import TambahPengajuan from "./Pages/TambahPengajuan";
 
 
 const LayoutAdmin = () => {
@@ -22,6 +23,7 @@ const LayoutAdmin = () => {
               <Route path="/status" Component={Status} />
               <Route path="/akun" Component={Akun} />
               <Route path="/laporan" Component={Laporan} />
+              <Route path="/pengajuan/tambah" Component={TambahPengajuan} />
             </Routes>
           </main>
 

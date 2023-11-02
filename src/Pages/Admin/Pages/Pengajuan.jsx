@@ -37,7 +37,7 @@ const Pengajuan = () => {
         <div className="w-full flex justify-end pr-6">
           {/* Ini buat button */}
           <Link
-            to="/admin"
+            to="/admin/pengajuan/tambah"
             className="flex items-center gap-2 bg-primary-blue text-white py-2.5 px-4 rounded-lg"
           >
             <AiOutlinePlus />
@@ -60,10 +60,10 @@ const Pengajuan = () => {
             </div>
           </div>
           <div className="mt-8">
-            <table className="table-auto w-full border border-black font-lato ">
-              <thead className="border border-black bg-blue-400">
+            <table className="table-auto w-full border border-black font-lato">
+              <thead className="border border-black bg-blue-100">
                 <tr>
-                  <th className="border border-black p-5">No</th>
+                  <th className="border border-black py-4">No</th>
                   <th className="border border-black">Instansi</th>
                   <th className="border border-black">ID Pengajuan</th>
                   <th className="border border-black">Tangal Pengajuan</th>
@@ -96,7 +96,7 @@ const Pengajuan = () => {
             </table>
             <div className="mt-4 flex justify-between items-center">
               <p>
-                Showing {rows} to {page + 1} of {pages} entries
+                Showing {rows} to {rows ? page + 1 : 0} of {pages} entries
               </p>
               <ReactPaginate
                 previousLabel="Previous"

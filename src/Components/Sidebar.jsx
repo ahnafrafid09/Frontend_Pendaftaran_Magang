@@ -35,7 +35,7 @@ const sideList = [
 
 const Sidebar = () => {
   return (
-    <div className='w-60 bg-gradient-to-b from-[#E3F2FD] from-55.97% to-[#BBDEFB] h-screen fixed overflow-y-auto top-20 left-0'>  
+    <div className='w-60 bg-gradient-to-b from-[#E3F2FD] from-55.97% to-[#BBDEFB] h-screen fixed overflow-y-auto top-24 left-0'>  
         <div className="p-2 pt-6 gap-4">
         {sideList.map((list, index) => {
           const Icon = list.icon;
