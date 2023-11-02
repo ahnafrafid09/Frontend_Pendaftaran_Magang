@@ -18,13 +18,14 @@ const Pengajuan = () => {
 
   const getDaftar = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/daftar?search_query=${keyword}&page=${page}&limit=${limit}`
+      `http://localhost:8000/api/daftar/menunggu?search_query=${keyword}&page=${page}&limit=${limit}`
     );
     setDaftar(response.data.result);
     setPage(response.data.page);
     setPages(response.data.totalPage);
     setRows(response.data.totalRows);
   };
+  console.log(daftar);
 
   const changePage = ({ selected }) => {
     setPage(selected);
@@ -66,7 +67,7 @@ const Pengajuan = () => {
                   <th className="border border-black py-4">No</th>
                   <th className="border border-black">Instansi</th>
                   <th className="border border-black">ID Pengajuan</th>
-                  <th className="border border-black">Tangal Pengajuan</th>
+                  <th className="border border-black">Tanggal Pengajuan</th>
                   <th className="border border-black">Status</th>
                   <th className="border border-black">Tindakan</th>
                 </tr>
@@ -81,7 +82,9 @@ const Pengajuan = () => {
                       </td>
                       <td className="border border-black">M-{data.id}</td>
                       <td className="border border-black capitalize">
-                        {data.surat.tanggal_pengajuan}
+                        {data.surat !== null && data
+                          ? data.surat.tanggal_pengajuan
+                          : "-"}
                       </td>
                       <td className="border border-black capitalize text-yellow-800">
                         {data.status}
