@@ -122,13 +122,6 @@ export default {
       "roboto": "Roboto, sans-serif",
       "lato": "Lato, sans-serif"
     },
-    gridTemplateColumns:{
-      sidebar:"360px auto"
-    },
-    gridTemplateRows:{
-      header:"64px auto"
-    }
-
   },
   plugins: [require('flowbite/plugin')],
 }

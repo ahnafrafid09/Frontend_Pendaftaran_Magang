@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import Button from "../../../Components/Button";
 import ReactPaginate from "react-paginate";
 import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai";
 
@@ -18,7 +19,7 @@ const Pengajuan = () => {
 
   const getDaftar = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/daftar/menunggu?search_query=${keyword}&page=${page}&limit=${limit}`
+      `http://localhost:8000/api/daftar-menunggu?search_query=${keyword}&page=${page}&limit=${limit}`
     );
     setDaftar(response.data.result);
     setPage(response.data.page);
@@ -60,8 +61,8 @@ const Pengajuan = () => {
               />
             </div>
           </div>
-          <div className="mt-8">
-            <table className="table-auto w-full border border-black font-lato">
+          <div className="mt-8 overflow-x-auto">
+            <table className="min-w-full border border-black font-lato">
               <thead className="border border-black bg-blue-100">
                 <tr>
                   <th className="border border-black py-4">No</th>
@@ -89,8 +90,19 @@ const Pengajuan = () => {
                       <td className="border border-black capitalize text-yellow-800">
                         {data.status}
                       </td>
-                      <td className="border border-black">
-                        <Link>Detail</Link>
+                      <td className="border border-black ">
+                        <div className="w-full flex justify-center items-center">
+                          <Button
+                            navigate={`/admin/pengajuan/detail/${data.id}`}
+                            icon={<AiOutlineSearch size="24px" />}
+                            bgColor="bg-primary-blue"
+                            paddingY="py-2"
+                            paddingX="px-4"
+                            textColor="text-netral-white"
+                          >
+                            Detail
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );

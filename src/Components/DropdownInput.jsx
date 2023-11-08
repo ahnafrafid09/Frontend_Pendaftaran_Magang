@@ -8,7 +8,7 @@ const DropdownInput = (props) => {
       <select
         id={props.id}
         className="w-64 bg-transparent h-10 border border-black rounded-md px-4"
-        value={props.selectedValue}
+        value={props.value}
         onChange={props.handleChange}
       >
         <option value="">{props.title}</option>

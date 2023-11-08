@@ -4,7 +4,6 @@ import axios from "axios";
 import Logo from "../assets/Logo Diskominfo Jabar.png";
 import Shape from "../assets/Shape.png";
 
-
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,15 +25,14 @@ const Login = () => {
     }
   };
   return (
-    
     <>
       <div className="w-screen h-screen bg-gradient-to-b from-[#FFF] from--9.28% to-[#90CAF9] to-168.46%">
         <div className="flex lg:justify-between w-screen h-screen flex-wrap md:flex-nowrap md:flex-col lg:flex-row">
           <div className="container max-w-sm p-4 lg:pt-16 lg:pl-36 ">
-          {/* md:pt-16 md:pl-36 */}
+            {/* md:pt-16 md:pl-36 */}
             <img className="w-2/4 lg:w-full lg:h-auto" src={Logo} alt="" />
           </div>
-          <div className="self-center p-6 mx-auto">
+          <div className="self-center p-6 mx-auto justify-self-center">
             <h1 className="font-roboto text-center text-3xl md:text-left md:text-4xl text-transparent font-semibold bg-clip-text bg-gradient-to-b from-[#1E88E5] from-0% via-[#1A98A0] via-50.52% to-[#16A75C] to-100%">
               Welcome Admin
             </h1>
@@ -67,7 +65,7 @@ const Login = () => {
             </form>
           </div>
           <div
-            className= "hidden lg:block lg:w-2/5 lg:h-screen lg:bg-cover lg:bg-no-repeat lg:bg-left "
+            className="hidden lg:block lg:w-2/5 lg:h-screen lg:bg-cover lg:bg-no-repeat lg:bg-left "
             style={{ backgroundImage: `url(${Shape})` }}
           ></div>
         </div>

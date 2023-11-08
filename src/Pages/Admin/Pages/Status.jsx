@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import Button from '../../../Components/Button'
-import Title from '../../../Components/Title'
-import { AiOutlineSearch } from 'react-icons/ai'
-import { BiEdit } from "react-icons/bi"
-import { Link } from 'react-router-dom'
-import ReactPaginate from 'react-paginate'
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import Button from "../../../Components/Button";
+import Title from "../../../Components/Title";
+import { AiOutlineSearch } from "react-icons/ai";
+import { BiEdit } from "react-icons/bi";
+import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
+import axios from "axios";
 
 const Status = () => {
   const [daftar, setDaftar] = useState([]);
@@ -21,13 +21,14 @@ const Status = () => {
 
   const getDaftar = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/daftar?search_query=${keyword}&page=${page}&limit=${limit}`
+      `http://localhost:8000/api/daftar-terima?search_query=${keyword}&page=${page}&limit=${limit}`
     );
     setDaftar(response.data.result);
     setPage(response.data.page);
     setPages(response.data.totalPage);
     setRows(response.data.totalRows);
   };
+  console.log(daftar);
 
   const changePage = ({ selected }) => {
     setPage(selected);
@@ -35,7 +36,7 @@ const Status = () => {
   return (
     <div>
       <div>
-        <Title >Status Magang</Title>
+        <Title>Status Magang</Title>
       </div>
       <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
         <div className="flex justify-end">
@@ -57,36 +58,48 @@ const Status = () => {
               <tr>
                 <th className="border border-black py-4">No</th>
                 <th className="border border-black">Instansi</th>
-                <th className="border border-black">Nama</th>
+                <th className="border border-black">Nomor ID</th>
                 <th className="border border-black">Divisi Magang</th>
+                <th className="border border-black">Mulai Magang</th>
+                <th className="border border-black">Selesai Magang</th>
                 <th className="border border-black">Status</th>
                 <th className="border border-black">Tindakan</th>
               </tr>
             </thead>
             <tbody>
-              {/* {daftar.map((data, index) => {
-                return ( */}
-              <tr className="text-center bg-white">
-                <td className="border border-black p-4">1</td>
-                <td className="border border-black capitalize">
-                  dlsjalsajkl
-                </td>
-                <td className="border border-black">M-1</td>
-                <td className="border border-black capitalize">
-                  djsaldsa
-                </td>
-                <td className="border border-black capitalize text-yellow-800">
-                  dsansan
-                </td>
-                <td className="border border-black">
-                  <Link className='flex justify-center items-center gap-2'>
-                    <BiEdit className='text-error' />
-                    <h1 className='text-yellow-900'>Edit</h1>
-                  </Link>
-                </td>
-              </tr>
-              {/* );
-              })} */}
+              {daftar.map((data, index) => {
+                return (
+                  <tr className="text-center bg-white" key={index}>
+                    <td className="border border-black p-4">{index + 1}</td>
+                    <td className="border border-black capitalize">
+                      {data.instansi.nama_instansi}
+                    </td>
+                    <td className="border border-black">{data.id}</td>
+                    <td className="border border-black capitalize">
+                      {data.bagian !== null && data ? data.bagian : "-"}
+                    </td>
+                    <td className="border border-black capitalize">
+                      {data.tanggal_masuk !== null && data
+                        ? data.tanggal_masuk
+                        : "-"}
+                    </td>
+                    <td className="border border-black capitalize">
+                      {data.tanggal_selesai !== null && data
+                        ? data.tanggal_selesai
+                        : "-"}
+                    </td>
+                    <td className="border border-black capitalize text-yellow-800">
+                      {data.instansi.status}
+                    </td>
+                    <td className="border border-black">
+                      <Link className="flex justify-center items-center gap-2">
+                        <BiEdit className="text-error" />
+                        <h1 className="text-yellow-900">Edit</h1>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <div className="mt-4 flex justify-between items-center">
@@ -107,9 +120,8 @@ const Status = () => {
           </div>
         </div>
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default Status
+export default Status;

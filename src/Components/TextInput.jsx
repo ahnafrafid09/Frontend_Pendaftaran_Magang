@@ -7,11 +7,13 @@ const TextInput = (props) => {
         {props.label}
       </label>
       <input
+        defaultValue={props.defaultValue}
         value={props.value}
-        type="text"
+        name={props.name}
+        type={"text" || props.type}
         id={props.id}
         placeholder={props.placeHolder}
-        className="w-64 h-10 border border-netral-black rounded-md px-4"
+        className={`${props.style}  w-64 h-10 border border-netral-black rounded-md px-4`}
         onChange={props.onChange}
       />
     </div>

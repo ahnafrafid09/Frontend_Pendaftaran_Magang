@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Title from "../../../Components/Title";
 import SubTitle from "../../../Components/SubTitle";
 import DropdownInput from "../../../Components/DropdownInput";
@@ -26,6 +26,7 @@ const TambahPengajuan = () => {
 
   const [msg, setMsg] = useState("");
   const [msgFile, setMsgFile] = useState("");
+  const [msgForm, setMsgForm] = useState("");
   const [newPelamar, setNewPelamar] = useState({
     namaLengkap: "",
     alamat: "",
@@ -39,13 +40,11 @@ const TambahPengajuan = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
-    // Validasi ekstensi file (PDF)
     if (file && !file.name.toLowerCase().endsWith(".pdf")) {
       setMsgFile("Ekstensi file harus PDF");
       e.target.value = "";
       return;
     }
-    // Validasi ukuran file (maksimum 5MB)
     if (file && file.size > 5 * 1024 * 1024) {
       setMsgFile("Ukuran file harus kurang dari 5MB");
       e.target.value = "";
@@ -82,6 +81,22 @@ const TambahPengajuan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (
+      !instansiData.namaInstansi ||
+      !instansiData.alamatInstansi ||
+      !instansiData.kategori ||
+      !suratData.noSurat ||
+      !suratData.tglPengajuan ||
+      pelamarData.length < 0
+    ) {
+      setMsgForm("Harap Isi Semua Pertanyaan");
+      return;
+    }
+    if (!suratData.pdfFile) {
+      setMsgForm("Harap unggah file surat sebelum mengirimkan data");
+      return;
+    }
 
     const formData = new FormData();
 
@@ -171,7 +186,6 @@ const TambahPengajuan = () => {
             <FileInput
               label="Unggah Surat Pengantar"
               id="berkas"
-              value={suratData.pdfFile}
               onChange={handleFileChange}
             />
             <TextInput
@@ -195,46 +209,52 @@ const TambahPengajuan = () => {
         </div>
         <div className="bg-blue-50 mt-5 rounded py-6 px-11">
           <SubTitle>Informasi Pelamar</SubTitle>
-          <div className="flex justify-between items-center mt-4">
-            <TextInput
-              label="Nama Lengkap"
-              id="namaLengkap"
-              placeHolder="Masukan Nama Lengkap"
-              value={newPelamar.namaLengkap}
-              onChange={(e) =>
-                setNewPelamar({
-                  ...newPelamar,
-                  namaLengkap: e.target.value,
-                })
-              }
-            />
-            <TextInput
-              label="Alamat"
-              id="alamat"
-              placeHolder="Masukan Alamat"
-              value={newPelamar.alamat}
-              onChange={(e) =>
-                setNewPelamar({
-                  ...newPelamar,
-                  alamat: e.target.value,
-                })
-              }
-            />
-            <TextInput
-              label="No Telepon"
-              id="noTelepon"
-              placeHolder="Masukan No Telepon"
-              value={newPelamar.noTelp}
-              onChange={(e) =>
-                setNewPelamar({
-                  ...newPelamar,
-                  noTelp: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="flex mt-6">
-            <div className="w-[41.41%]">
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            <div className="col-span-3 flex justify-between">
+              <div>
+                <TextInput
+                  label="Nama Lengkap"
+                  id="namaLengkap"
+                  placeHolder="Masukan Nama Lengkap"
+                  value={newPelamar.namaLengkap}
+                  onChange={(e) =>
+                    setNewPelamar({
+                      ...newPelamar,
+                      namaLengkap: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="Alamat"
+                  id="alamat"
+                  placeHolder="Masukan Alamat"
+                  value={newPelamar.alamat}
+                  onChange={(e) =>
+                    setNewPelamar({
+                      ...newPelamar,
+                      alamat: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <TextInput
+                  label="No Telepon"
+                  id="noTelepon"
+                  placeHolder="Masukan No Telepon"
+                  value={newPelamar.noTelp}
+                  onChange={(e) =>
+                    setNewPelamar({
+                      ...newPelamar,
+                      noTelp: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </div>
+            <div>
               <TextInput
                 label="No Induk"
                 id="noInduk"
@@ -248,15 +268,18 @@ const TambahPengajuan = () => {
                 }
               />
             </div>
-            <TextInput
-              label="Alamat Email"
-              id="alamatEmail"
-              placeHolder="Masukan Alamat Email"
-              value={newPelamar.email}
-              onChange={(e) =>
-                setNewPelamar({ ...newPelamar, email: e.target.value })
-              }
-            />
+
+            <div className="justify-self-center">
+              <TextInput
+                label="Alamat Email"
+                id="alamatEmail"
+                placeHolder="Masukan Alamat Email"
+                value={newPelamar.email}
+                onChange={(e) =>
+                  setNewPelamar({ ...newPelamar, email: e.target.value })
+                }
+              />
+            </div>
           </div>
           <p className="text-error font-bold font-roboto">{msg}</p>
         </div>
@@ -306,6 +329,9 @@ const TambahPengajuan = () => {
         ""
       )}
       <div className="mt-5">
+        <p className="text-center text-error mt-5 mb-5 font-bold font-roboto">
+          {msgForm}
+        </p>
         <Button
           bgColor="bg-green-700"
           paddingY="py-3"
