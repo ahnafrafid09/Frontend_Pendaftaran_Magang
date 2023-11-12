@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import Title from "../../../Components/Title";
 
 const Akun = () => {
-  return (
-    <div>ini Akun</div>
-  )
-}
+  return <Title>Manajemen Akun</Title>;
+};
 
-export default Akun
+export default Akun;

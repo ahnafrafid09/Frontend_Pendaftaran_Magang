@@ -29,13 +29,6 @@ const DetailPengajuan = () => {
     tglPengajuan: "",
     url: "",
   });
-  const [dataPelamar, setDataPelamar] = useState({
-    namaLengkap: "",
-    alamat: "",
-    email: "",
-    noInduk: "",
-    noTelp: "",
-  });
 
   const [magangData, setMagangData] = useState({
     tglMasuk: "",
@@ -71,6 +64,60 @@ const DetailPengajuan = () => {
     setPelamarData(updatedPelamarData);
   };
 
+  const updatedPelamar = (e, pelamarId) => {
+    e.preventDefault();
+    const selectedPelamar = pelamarData.find(
+      (pelamar) => pelamar.id === pelamarId
+    );
+    axios
+      .patch(`http://localhost:8000/api/pelamar/${pelamarId}`, selectedPelamar)
+      .then((response) => {
+        if (response.status === 200) {
+          toast.success(response.data.msg, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Terjadi kesalahan:", error);
+      });
+  };
+  const handlePelamarDelete = (e, pelamarId) => {
+    e.preventDefault();
+
+    if (pelamarData.length > 1) {
+      axios
+        .delete(`http://localhost:8000/api/pelamar/${pelamarId}`)
+        .then((response) => {
+          if (response.status === 200) {
+            toast.error(response.data.msg, {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          }
+          setPelamarData((prevPelamarData) =>
+            prevPelamarData.filter((pelamar) => pelamar.id !== pelamarId)
+          );
+        })
+        .catch((error) => {
+          console.error("Terjadi kesalahan:", error);
+        });
+    }
+  };
+
   // Ini Section Handle Instansi
   const updateInstansi = (e) => {
     e.preventDefault();
@@ -81,7 +128,7 @@ const DetailPengajuan = () => {
       )
       .then((response) => {
         if (response.status === 200) {
-          toast.success("Edit Data Instansi Berhasil Disimpan !", {
+          toast.success(response.data.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -135,7 +182,7 @@ const DetailPengajuan = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          toast.success("Edit Data Surat Berhasil Disimpan !", {
+          toast.success(response.data.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -346,6 +393,7 @@ const DetailPengajuan = () => {
                 textColor="text-white"
                 paddingX="px-3"
                 paddingY="py-0.5"
+                onClick={(e) => updatedPelamar(e, data.id)}
               >
                 Edit
               </Button>
@@ -357,7 +405,7 @@ const DetailPengajuan = () => {
                     label="Nama Lengkap"
                     id={`namaLengkap ${index}`}
                     placeHolder="Masukan Nama Lengkap"
-                    name="namaLengkap"
+                    name="nama_lengkap"
                     value={data.nama_lengkap}
                     onChange={(e) => handlePelamarChange(e, data.id)}
                   />
@@ -376,7 +424,7 @@ const DetailPengajuan = () => {
                   <TextInput
                     label="No Telepon"
                     id={`noTelepon ${index}`}
-                    name="noTelp"
+                    name="no_telepon"
                     placeHolder="Masukan No Telepon"
                     value={data.no_telepon}
                     onChange={(e) => handlePelamarChange(e, data.id)}
@@ -387,7 +435,7 @@ const DetailPengajuan = () => {
                 <TextInput
                   label="No Induk"
                   id={`noInduk ${index}`}
-                  name="noInduk"
+                  name="no_induk"
                   placeHolder="Masukan No Induk"
                   value={data.no_induk}
                   onChange={(e) => handlePelamarChange(e, data.id)}
@@ -404,6 +452,19 @@ const DetailPengajuan = () => {
                   onChange={(e) => handlePelamarChange(e, data.id)}
                 />
               </div>
+              {pelamarData.length > 1 && (
+                <div className="justify-self-end self-end">
+                  <Button
+                    bgColor="bg-error"
+                    textColor="text-white"
+                    paddingX="px-4"
+                    paddingY="py-2"
+                    onClick={(e) => handlePelamarDelete(e, data.id)}
+                  >
+                    Hapus Pelamar
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         ))}

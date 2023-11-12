@@ -17,9 +17,9 @@ const sideList = [
     link: "/admin/pengajuan",
   },
   {
-    listName: "Status Magang",
+    listName: "Data Magang",
     icon: HiOutlineClock,
-    link: "/admin/status",
+    link: "/admin/magang",
   },
   {
     listName: "History Magang",

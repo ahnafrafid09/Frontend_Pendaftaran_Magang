@@ -9,6 +9,7 @@ const DateInput = (params) => {
         id={params.id}
         className="border border-gray-300 rounded-md px-5 py-2"
         value={params.value}
+        disabled={!props.disabled ? true : props.disabled}
         onChange={params.onChange}
       />
     </div>

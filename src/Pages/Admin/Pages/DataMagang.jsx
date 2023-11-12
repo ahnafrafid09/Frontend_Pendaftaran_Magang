@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import Button from "../../../Components/Button";
 import Title from "../../../Components/Title";
 import { AiOutlineSearch } from "react-icons/ai";
-import { BiEdit } from "react-icons/bi";
-import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 
-const Status = () => {
+const Magang = () => {
   const [daftar, setDaftar] = useState([]);
   const [pages, setPages] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -34,10 +32,8 @@ const Status = () => {
     setPage(selected);
   };
   return (
-    <div>
-      <div>
-        <Title>Status Magang</Title>
-      </div>
+    <>
+      <Title>Data Magang</Title>
       <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
         <div className="flex justify-end">
           <div className="relative text-gray-600">
@@ -88,14 +84,28 @@ const Status = () => {
                         ? data.tanggal_selesai
                         : "-"}
                     </td>
-                    <td className="border border-black capitalize text-yellow-800">
-                      {data.instansi.status}
-                    </td>
+                    {data.instansi && data.instansi.status === "Diterima" ? (
+                      <td className="border border-black capitalize text-green-800 font-bold ">
+                        {data.instansi.status}
+                      </td>
+                    ) : (
+                      <td className="border border-black capitalize text-blue-900 font-bold">
+                        {data.instansi.status}
+                      </td>
+                    )}
                     <td className="border border-black">
-                      <Link className="flex justify-center items-center gap-2">
-                        <BiEdit className="text-error" />
-                        <h1 className="text-yellow-900">Edit</h1>
-                      </Link>
+                      <div className="w-full flex justify-center items-center">
+                        <Button
+                          navigate={`/admin/magang/detail/${data.instansi.id}`}
+                          icon={<AiOutlineSearch size="24px" />}
+                          bgColor="bg-primary-blue"
+                          paddingY="py-2"
+                          paddingX="px-4"
+                          textColor="text-netral-white"
+                        >
+                          Detail
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -120,8 +130,8 @@ const Status = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Status;
+export default Magang;

@@ -5,11 +5,12 @@ import Sidebar from "../../Components/Sidebar";
 import Dashboard from "./Pages/Dashboard";
 import Pengajuan from "./Pages/Pengajuan";
 import Laporan from "./Pages/Laporan";
-import Status from "./Pages/Status";
+import Magang from "./Pages/DataMagang";
 import Akun from "./Pages/Akun";
 import TambahPengajuan from "./Pages/TambahPengajuan";
 import DetailPengajuan from "./Pages/DetailPengajuan";
 import HistoryMagang from "./Pages/HistoryMagang";
+import DetailMagang from "./Pages/DetailMagang";
 
 const LayoutAdmin = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,7 +30,7 @@ const LayoutAdmin = () => {
           <Routes>
             <Route exact path="/" Component={Dashboard} />
             <Route path="/pengajuan" Component={Pengajuan} />
-            <Route path="/status" Component={Status} />
+            <Route path="/magang" Component={Magang} />
             <Route path="/akun" Component={Akun} />
             <Route path="/laporan" Component={Laporan} />
             <Route path="/history" Component={HistoryMagang} />
@@ -38,6 +39,7 @@ const LayoutAdmin = () => {
               path="/pengajuan/detail/:instansiId"
               Component={DetailPengajuan}
             />
+            <Route path="/magang/detail/:instansiId" Component={DetailMagang} />
           </Routes>
         </main>
       </div>
