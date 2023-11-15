@@ -3,7 +3,7 @@ import { HiViewGrid, HiOutlineClock } from "react-icons/hi";
 import { RiMailDownloadLine } from "react-icons/ri";
 import { TbSettings2 } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
-import { AiOutlineLineChart, AiOutlineHistory } from "react-icons/ai";
+import { AiOutlineHistory } from "react-icons/ai";
 
 const sideList = [
   {
@@ -31,17 +31,12 @@ const sideList = [
     icon: TbSettings2,
     link: "/admin/akun",
   },
-  {
-    listName: "Laporan & Analisis",
-    icon: AiOutlineLineChart,
-    link: "/admin/laporan",
-  },
 ];
 
 const Sidebar = ({ isOpen }) => {
   return (
     <div
-      className={`w-60 bg-gradient-to-b from-[#E3F2FD] from-55.97% to-[#BBDEFB] h-screen fixed overflow-y-auto top-24 left-0 transition-transform transform ${
+      className={`w-60 z-10 bg-gradient-to-b from-[#E3F2FD] from-55.97% to-[#BBDEFB] h-screen fixed overflow-y-auto top-24 left-0 transition-transform transform ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >

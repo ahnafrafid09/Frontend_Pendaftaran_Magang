@@ -36,6 +36,7 @@ const DetailPengajuan = () => {
     bagian: "",
   });
 
+  const [alasan, setAlasan] = useState([]);
   const [pelamarData, setPelamarData] = useState([]);
   const [msgFile, setMsgFile] = useState("");
   const [msg, setMsg] = useState("");
@@ -182,6 +183,8 @@ const DetailPengajuan = () => {
       })
       .then((response) => {
         if (response.status === 200) {
+          window.location.reload();
+
           toast.success(response.data.msg, {
             position: "top-right",
             autoClose: 3000,
@@ -204,6 +207,7 @@ const DetailPengajuan = () => {
       const response = await axios.get(
         `http://localhost:8000/api/daftar/${instansiId}`
       );
+      console.log(response.data);
       if (response.data) {
         setInstansiData({
           id: response.data.id,
@@ -232,7 +236,10 @@ const DetailPengajuan = () => {
     e.preventDefault();
 
     try {
-      await axios.patch(`http://localhost:8000/api/daftar/tolak/${instansiId}`);
+      await axios.patch(
+        `http://localhost:8000/api/daftar/tolak/${instansiId}`,
+        { alasan: alasan }
+      );
       navigate("/admin/pengajuan");
     } catch (error) {
       console.log(error);
@@ -278,13 +285,14 @@ const DetailPengajuan = () => {
           bgColor="bg-primary-blue"
           paddingY="py-2"
           paddingX="px-2.5"
+          style="text-sm md:text-base lg:text-lg"
         >
           Kembali
         </Button>
       </div>
       <ToastContainer />
-      <div className="flex flex-col justify-start gap-8">
-        <div className="bg-blue-50 mt-5 rounded py-6 px-11">
+      <div className="flex flex-col justify-start gap-8 md:gap-4">
+        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <div className="flex gap-2 items-center">
             <SubTitle>Informasi Instansi</SubTitle>
             <Button
@@ -297,7 +305,7 @@ const DetailPengajuan = () => {
               Edit
             </Button>
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <DropdownInput
               options={["SMA/SMK", "Perguruan Tinggi", "Kategori Lainnya"]}
               title="Pilih Kategori"
@@ -333,7 +341,7 @@ const DetailPengajuan = () => {
             />
           </div>
         </div>
-        <div className="bg-blue-50 mt-5 rounded py-6 px-11">
+        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <div className="flex items-center gap-3">
             <SubTitle>Informasi Surat</SubTitle>
             <p className="text-error font-bold font-roboto">{msgFile}</p>
@@ -359,9 +367,9 @@ const DetailPengajuan = () => {
               Buka File
             </Button>
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <FileInput
-              label="Unggah Perubahan Surat (Opsional"
+              label="Unggah Perubahan Surat (Opsional)"
               id="berkas"
               onChange={handleFileChange}
             />
@@ -385,7 +393,10 @@ const DetailPengajuan = () => {
           </div>
         </div>
         {pelamarData.map((data, index) => (
-          <div className="bg-blue-50 mt-5 rounded py-6 px-11" key={data.id}>
+          <div
+            className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 "
+            key={data.id}
+          >
             <div className="flex gap-3 items-center">
               <SubTitle>Informasi Pelamar</SubTitle>
               <Button
@@ -398,8 +409,8 @@ const DetailPengajuan = () => {
                 Edit
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="col-span-3 flex justify-between">
+            <div className="w-3/5 mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              <div className=" lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
                 <div>
                   <TextInput
                     label="Nama Lengkap"
@@ -441,7 +452,7 @@ const DetailPengajuan = () => {
                   onChange={(e) => handlePelamarChange(e, data.id)}
                 />
               </div>
-              <div className="justify-self-center">
+              <div className="lg:justify-self-center">
                 <TextInput
                   label="Alamat Email"
                   id={`alamatEmail ${index}`}
@@ -468,8 +479,8 @@ const DetailPengajuan = () => {
             </div>
           </div>
         ))}
-        <div className="flex justify-center items-center gap-5">
-          <div className="w-1/2">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-5">
+          <div className="w-full md:w-1/2">
             <Button
               bgColor="bg-green-800"
               paddingY="py-4"
@@ -493,7 +504,7 @@ const DetailPengajuan = () => {
                   <h3 className="mb-5 text-lg font-roboto text-netral-black ">
                     Isi Mulai Magang, Selesai Magang, dan Divisi Magang Dibawah!
                   </h3>
-                  <div className="flex items-center justify-around mt-10">
+                  <div className="flex flex-col md:flex-row items-center justify-around mt-10">
                     <DateInput
                       id="tanggalMulai"
                       label="Mulai Magang"
@@ -538,7 +549,7 @@ const DetailPengajuan = () => {
                     />
                   </div>
                   <p className="text-error font-bold font-roboto">{msg}</p>
-                  <div className="flex justify-center gap-4 mt-10">
+                  <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
                     <Button
                       bgColor="bg-blue-800"
                       textColor="text-white"
@@ -553,7 +564,7 @@ const DetailPengajuan = () => {
                       textColor="text-white"
                       paddingX="px-28"
                       paddingY="py-1.5"
-                      onClick={() => setOpenModalTolak(false)}
+                      onClick={() => setOpenModalTerima(false)}
                     >
                       Batalkan
                     </Button>
@@ -562,7 +573,7 @@ const DetailPengajuan = () => {
               </Modal.Body>
             </Modal>
           </div>
-          <div className="w-1/2">
+          <div className="w-full md:w-1/2">
             <Button
               bgColor="bg-error"
               paddingY="py-4"
@@ -586,6 +597,15 @@ const DetailPengajuan = () => {
                   <h3 className="mb-5 text-lg font-roboto text-netral-black ">
                     Anda Yakin Ingin Menolak Pengajuan Ini?
                   </h3>
+                  <div className="my-4 flex justify-center items-center">
+                    <TextInput
+                      label="Masukan Alasan"
+                      id="alasan"
+                      placeHolder="Masukan Alasan Menolak"
+                      value={alasan}
+                      onChange={(e) => setAlasan(e.target.value)}
+                    />
+                  </div>
                   <div className="flex justify-center gap-4">
                     <Button
                       bgColor="bg-blue-800"

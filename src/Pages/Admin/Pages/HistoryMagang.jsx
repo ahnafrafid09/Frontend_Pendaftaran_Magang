@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Button from "../../../Components/Button";
-import Title from "../../../Components/Title";
-import DataTable from "../../../Components/DataTable";
-import { AiOutlineSearch } from "react-icons/ai";
 import Pagination from "../../../Components/Pagination";
+import DataTable from "../../../Components/DataTable";
+import Title from "../../../Components/Title";
+import { AiOutlineSearch } from "react-icons/ai";
+import ReactPaginate from "react-paginate";
 import axios from "axios";
 
-const Magang = () => {
-  const [magang, setMagang] = useState([]);
+const HistoryMagang = () => {
+  const [history, setHistory] = useState([]);
   const [pages, setPages] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -15,38 +16,35 @@ const Magang = () => {
   const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
-    getMagang();
+    getDaftar();
   }, [page, keyword]);
 
-  const getMagang = async () => {
+  const getDaftar = async () => {
     const response = await axios.get(
-      `http://localhost:8000/api/daftar-terima?search_query=${keyword}&page=${page}&limit=${limit}`
+      `http://localhost:8000/api/daftar-selesai?search_query=${keyword}&page=${page}&limit=${limit}`
     );
-    setMagang(response.data.result);
+    setHistory(response.data.result);
     setPage(response.data.page);
     setPages(response.data.totalPage);
     setRows(response.data.totalRows);
   };
+  console.log(history);
 
   const changePage = ({ selected }) => {
     setPage(selected);
   };
-
-  const columnsMagang = [
+  const columnsHistory = [
     { Header: "No", accessor: (row, index) => index + 1 },
-    { Header: "Instansi", accessor: "instansi.nama_instansi" },
-    { Header: "Nomor ID", accessor: "id" },
-    { Header: "Divisi Magang", accessor: "bagian" },
-    { Header: "Mulai Magang", accessor: "tanggal_masuk" },
-    { Header: "Selesai Magang", accessor: "tanggal_selesai" },
+    { Header: "Instansi", accessor: "nama_instansi" },
+    { Header: "Tanggal Pengajuan", accessor: "surat.tanggal_pengajuan" },
     {
       Header: "Status",
-      accessor: "instansi.status",
+      accessor: "status",
       Cell: ({ value }) => (
         <div
           className={`capitalize ${
-            value === "Diterima"
-              ? "text-green-800 font-bold"
+            value === "Ditolak"
+              ? "text-error font-bold"
               : "text-blue-900 font-bold"
           }`}
         >
@@ -56,11 +54,11 @@ const Magang = () => {
     },
     {
       Header: "Tindakan",
-      accessor: "instansi.id",
+      accessor: "id",
       Cell: ({ value }) => (
         <div className="w-full flex justify-center items-center">
           <Button
-            navigate={`/admin/magang/detail/${value}`}
+            navigate={`/admin/history/detail/${value}`}
             icon={<AiOutlineSearch size="24px" />}
             bgColor="bg-primary-blue"
             paddingY="py-2"
@@ -73,9 +71,10 @@ const Magang = () => {
       ),
     },
   ];
+
   return (
     <>
-      <Title>Data Magang</Title>
+      <Title>History Magang</Title>
       <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
         <div className="flex justify-end">
           <div className="relative text-gray-600">
@@ -91,12 +90,12 @@ const Magang = () => {
           </div>
         </div>
         <div className="mt-8">
-          <DataTable data={magang} columns={columnsMagang} />
+          <DataTable data={history} columns={columnsHistory} />
           <div className="mt-4">
             <Pagination
               rows={rows}
-              page={page}
               pages={pages}
+              page={page}
               changePage={changePage}
             />
           </div>
@@ -106,4 +105,4 @@ const Magang = () => {
   );
 };
 
-export default Magang;
+export default HistoryMagang;

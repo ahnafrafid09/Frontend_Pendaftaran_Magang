@@ -11,8 +11,7 @@ import { useParams, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-
-const DetailMagang = () => {
+const DetailHistory = () => {
   const [instansiData, setInstansiData] = useState({
     id: "",
     namaInstansi: "",
@@ -30,6 +29,9 @@ const DetailMagang = () => {
     tglPengajuan: "",
     url: "",
   });
+  const [alasan, setAlasan] = useState({
+    alasan_tolak: "",
+  });
   const [pelamarData, setPelamarData] = useState([]);
   const { instansiId } = useParams();
 
@@ -40,12 +42,10 @@ const DetailMagang = () => {
   const getDaftarById = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/daftar/${instansiId}`
+        `http://localhost:8000/api/daftar-selesai/${instansiId}`
       );
-      console.log(response.data);
-      if (response.data) {
+      if (response.data.status === "Selesai") {
         setInstansiData({
-          id: response.data.id,
           namaInstansi: response.data.nama_instansi,
           alamatInstansi: response.data.alamat,
           kategori: response.data.kategori,
@@ -62,6 +62,21 @@ const DetailMagang = () => {
           tglMasuk: response.data.magang.tanggal_masuk,
           tglSelesai: response.data.magang.tanggal_selesai,
         });
+      } else if (response.data.status === "Ditolak") {
+        setInstansiData({
+          namaInstansi: response.data.nama_instansi,
+          alamatInstansi: response.data.alamat,
+          kategori: response.data.kategori,
+          status: response.data.status,
+        });
+        setPelamarData(response.data.pelamars);
+        setAlasan({ alasan_tolak: response.data.alasan.alasan_tolak ?? "" });
+        setSuratData({
+          file: response.data.surat.file,
+          url: response.data.surat.url,
+          noSurat: response.data.surat.no_surat,
+          tglPengajuan: response.data.surat.tanggal_pengajuan,
+        });
       } else {
         console.error("data tidak ada");
       }
@@ -70,42 +85,13 @@ const DetailMagang = () => {
     }
   };
 
-  // Update Status dan Tgl Masuk, Tgl Selesai
-  const updateStatusMagang = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.patch(
-        `http://localhost:8000/api/instansi-magang/${instansiData.id}`,
-        {
-          status: instansiData.status,
-          tglMasuk: magangData.tglMasuk,
-          tglSelesai: magangData.tglSelesai,
-        }
-      );
-      if (response.status === 200) {
-        toast.success(response.data.msg, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <>
-      <Title>Detail Magang</Title>
+      <Title>Detail History Magang</Title>
       <div className="flex justify-start items-center mt-5">
         <Button
           textColor="text-white"
-          navigate="/admin/magang"
+          navigate="/admin/history"
           icon={<AiOutlineArrowLeft />}
           bgColor="bg-primary-blue"
           paddingY="py-2"
@@ -121,45 +107,31 @@ const DetailMagang = () => {
           <div className="flex gap-2 items-center">
             <SubTitle>Informasi Magang</SubTitle>
           </div>
-          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
-            <DropdownInput
-              options={["Aktif", "Diterima", "Selesai"]}
-              title="Pilih Status"
-              label="Status"
+          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:justify-between md:flex-row items-center mt-4">
+            <TextInput
+              id="tanggalPengajuan"
+              label="Tanggal Pengajuan"
+              disabled={true}
               value={instansiData.status}
-              handleChange={(e) =>
-                setInstansiData({ ...instansiData, status: e.target.value })
-              }
             />
-            <DateInput
-              label="Mulai Magang"
-              id="tlgMasuk"
-              placeHolder="Masukan Tgl Mulai Magang"
-              value={magangData.tglMasuk}
-              onChange={(e) =>
-                setMagangData({ ...magangData, tglMasuk: e.target.value })
-              }
-            />
-            <DateInput
-              label="Selesai Magang"
-              id="tglSelesai"
-              placeHolder="Masukan Tgl Selesai Magang"
-              value={magangData.tglSelesai}
-              onChange={(e) =>
-                setMagangData({ ...magangData, tglSelesai: e.target.value })
-              }
-            />
-          </div>
-          <div className="flex items-center mt-3">
-            <Button
-              bgColor="bg-primary-green"
-              textColor="text-white"
-              paddingX="px-2.5"
-              paddingY="py-1.5"
-              onClick={updateStatusMagang}
-            >
-              Simpan
-            </Button>
+            {!alasan.alasan_tolak && instansiData.status === "Selesai" ? (
+              <>
+                <TextInput
+                  id="tanggalMasuk"
+                  label="Tanggal Masuk"
+                  disabled={true}
+                  value={magangData.tglMasuk}
+                />
+                <TextInput
+                  id="tanggalSelesai"
+                  label="Tanggal Selesai"
+                  disabled={true}
+                  value={magangData.tglSelesai}
+                />
+              </>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
@@ -169,15 +141,13 @@ const DetailMagang = () => {
           <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <TextInput
               disabled={true}
-              title="Pilih Kategori"
-              label="Pilih Kategori:"
+              label="Kategori Instansi"
               value={instansiData.kategori}
             />
             <TextInput
               label="Nama Instansi"
               disabled={true}
               id="namaInstansi"
-              placeHolder="Masukan Nama Instansi"
               value={instansiData.namaInstansi}
             />
             <TextInput
@@ -193,6 +163,7 @@ const DetailMagang = () => {
           <div className="flex items-center gap-3">
             <SubTitle>Informasi Surat</SubTitle>
           </div>
+
           <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <Link to={suratData.url} target="_blank">
               <div className="flex flex-col gap-y-2.5 border">
@@ -283,9 +254,27 @@ const DetailMagang = () => {
             </div>
           </div>
         ))}
+        {alasan.alasan_tolak && instansiData.status === "Ditolak" ? (
+          <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
+            <div className="flex gap-2 items-center">
+              <SubTitle>Catatan</SubTitle>
+            </div>
+            <div className="mt-4">
+              <textarea
+                name="Catatan"
+                id="catatan"
+                className="w-full bg-transparent h-28 py-5 px-6 border border-netral-black rounded"
+              >
+                {alasan.alasan_tolak}
+              </textarea>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );
 };
 
-export default DetailMagang;
+export default DetailHistory;

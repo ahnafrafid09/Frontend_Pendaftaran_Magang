@@ -4,42 +4,52 @@ import { Routes, Route } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar";
 import Dashboard from "./Pages/Dashboard";
 import Pengajuan from "./Pages/Pengajuan";
-import Laporan from "./Pages/Laporan";
 import Magang from "./Pages/DataMagang";
 import Akun from "./Pages/Akun";
 import TambahPengajuan from "./Pages/TambahPengajuan";
 import DetailPengajuan from "./Pages/DetailPengajuan";
-import HistoryMagang from "./Pages/HistoryMagang";
 import DetailMagang from "./Pages/DetailMagang";
+import HistoryMagang from "./Pages/HistoryMagang";
+import DetailHistory from "./Pages/DetailHistory";
 
 const LayoutAdmin = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(!isSidebarOpen);
   };
 
   return (
     <>
-      <div className="flex w-full">
+      <div className="flex w-full lg:flex-row">
         <Navbar onToggleSidebar={toggleSidebar} />
-        <Sidebar isOpen={sidebarOpen} />
+        <div className={`lg:w-[241px]${isSidebarOpen ? "block" : "hidden"}`}>
+          <Sidebar isOpen={isSidebarOpen} />
+        </div>
         <main
-          className={`w-full mt-24 p-10 ${sidebarOpen ? "ml-[241px]" : "ml-8"}`}
+          className={`w-full mt-24 p-4 lg:p-10 ${
+            isSidebarOpen ? "ml-0 lg:ml-[241px]" : "ml-0 lg:ml-8"
+          }`}
         >
           <Routes>
-            <Route exact path="/" Component={Dashboard} />
-            <Route path="/pengajuan" Component={Pengajuan} />
-            <Route path="/magang" Component={Magang} />
-            <Route path="/akun" Component={Akun} />
-            <Route path="/laporan" Component={Laporan} />
-            <Route path="/history" Component={HistoryMagang} />
-            <Route path="/pengajuan/tambah" Component={TambahPengajuan} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/pengajuan" element={<Pengajuan />} />
+            <Route path="/magang" element={<Magang />} />
+            <Route path="/akun" element={<Akun />} />
+            <Route path="/history" element={<HistoryMagang />} />
+            <Route path="/pengajuan/tambah" element={<TambahPengajuan />} />
             <Route
               path="/pengajuan/detail/:instansiId"
-              Component={DetailPengajuan}
+              element={<DetailPengajuan />}
             />
-            <Route path="/magang/detail/:instansiId" Component={DetailMagang} />
+            <Route
+              path="/magang/detail/:instansiId"
+              element={<DetailMagang />}
+            />
+            <Route
+              path="/history/detail/:instansiId"
+              element={<DetailHistory />}
+            />
           </Routes>
         </main>
       </div>

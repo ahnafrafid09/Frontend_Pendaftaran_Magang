@@ -39,7 +39,6 @@ const TambahPengajuan = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-
     if (file && !file.name.toLowerCase().endsWith(".pdf")) {
       setMsgFile("Ekstensi file harus PDF");
       e.target.value = "";
@@ -81,22 +80,6 @@ const TambahPengajuan = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (
-      !instansiData.namaInstansi ||
-      !instansiData.alamatInstansi ||
-      !instansiData.kategori ||
-      !suratData.noSurat ||
-      !suratData.tglPengajuan ||
-      pelamarData.length < 0
-    ) {
-      setMsgForm("Harap Isi Semua Pertanyaan");
-      return;
-    }
-    if (!suratData.pdfFile) {
-      setMsgForm("Harap unggah file surat sebelum mengirimkan data");
-      return;
-    }
 
     const formData = new FormData();
 
@@ -120,7 +103,9 @@ const TambahPengajuan = () => {
       });
       navigate("/admin/pengajuan");
     } catch (error) {
-      console.error("Error:", error);
+      if (error.response) {
+        setMsg(error.response.data.msg);
+      }
     }
   };
 
@@ -135,15 +120,15 @@ const TambahPengajuan = () => {
           bgColor="bg-primary-blue"
           paddingY="py-2"
           paddingX="px-2.5"
+          style="text-sm md:text-base lg:text-lg"
         >
           Kembali
         </Button>
       </div>
-
-      <div className="flex flex-col justify-start gap-8">
-        <div className="bg-blue-50 mt-5 rounded py-6 px-11">
+      <div className="flex flex-col justify-start gap-8 md:gap-4">
+        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <SubTitle>Informasi Instansi</SubTitle>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <DropdownInput
               options={["SMA/SMK", "Perguruan Tinggi", "Kategori Lainnya"]}
               title="Pilih Kategori"
@@ -179,10 +164,10 @@ const TambahPengajuan = () => {
             />
           </div>
         </div>
-        <div className="bg-blue-50 mt-5 rounded py-6 px-11">
-          <SubTitle>Informasi Instansi</SubTitle>
+        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
+          <SubTitle>Informasi Surat</SubTitle>
           <p className="text-error font-bold font-roboto">{msgFile}</p>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
             <FileInput
               label="Unggah Surat Pengantar"
               id="berkas"
@@ -207,11 +192,11 @@ const TambahPengajuan = () => {
             />
           </div>
         </div>
-        <div className="bg-blue-50 mt-5 rounded py-6 px-11">
+        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <SubTitle>Informasi Pelamar</SubTitle>
-          <div className="grid grid-cols-3 gap-4 mt-4">
-            <div className="col-span-3 flex justify-between">
-              <div>
+          <div className="w-3/5  mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <div className=" lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
+              <div className="">
                 <TextInput
                   label="Nama Lengkap"
                   id="namaLengkap"
@@ -225,7 +210,7 @@ const TambahPengajuan = () => {
                   }
                 />
               </div>
-              <div>
+              <div className="">
                 <TextInput
                   label="Alamat"
                   id="alamat"
@@ -239,7 +224,7 @@ const TambahPengajuan = () => {
                   }
                 />
               </div>
-              <div>
+              <div className="">
                 <TextInput
                   label="No Telepon"
                   id="noTelepon"
@@ -254,7 +239,7 @@ const TambahPengajuan = () => {
                 />
               </div>
             </div>
-            <div>
+            <div className="">
               <TextInput
                 label="No Induk"
                 id="noInduk"
@@ -268,8 +253,7 @@ const TambahPengajuan = () => {
                 }
               />
             </div>
-
-            <div className="justify-self-center">
+            <div className=" lg:justify-self-center">
               <TextInput
                 label="Alamat Email"
                 id="alamatEmail"
@@ -284,7 +268,7 @@ const TambahPengajuan = () => {
           <p className="text-error font-bold font-roboto">{msg}</p>
         </div>
       </div>
-      <div className="flex justify-end mt-5">
+      <div className="flex justify-end mt-5 md:flex md:justify-end">
         <Button
           icon={<AiOutlinePlus />}
           bgColor="bg-primary-blue"
@@ -297,7 +281,7 @@ const TambahPengajuan = () => {
         </Button>
       </div>
       {pelamarData.length > 0 ? (
-        <div className="mt-8">
+        <div className="mt-8 overflow-x-auto">
           <table className="table-auto w-full border border-black font-lato">
             <thead className="border border-black bg-blue-100">
               <tr>
@@ -312,14 +296,16 @@ const TambahPengajuan = () => {
             <tbody>
               {pelamarData.map((item, index) => (
                 <tr className="text-center bg-white" key={index}>
-                  <td className="border border-black p-4">{index + 1}</td>
-                  <td className="border border-black">{item.namaLengkap}</td>
-                  <td className="border border-black capitalize">
+                  <td className="border border-black  p-4">{index + 1}</td>
+                  <td className="border border-black p-4">
+                    {item.namaLengkap}
+                  </td>
+                  <td className="border border-black capitalize p-4">
                     {item.alamat}
                   </td>
-                  <td className="border border-black">{item.noTelp}</td>
-                  <td className="border border-black">{item.noInduk}</td>
-                  <td className="border border-black">{item.email}</td>
+                  <td className="border border-black p-4">{item.noTelp}</td>
+                  <td className="border border-black p-4">{item.noInduk}</td>
+                  <td className="border border-black p-4">{item.email}</td>
                 </tr>
               ))}
             </tbody>
