@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import Title from "../../../Components/Title";
-import SubTitle from "../../../Components/SubTitle";
-import DropdownInput from "../../../Components/DropdownInput";
-import TextInput from "../../../Components/TextInput";
-import FileInput from "../../../Components/FileInput";
-import DateInput from "../../../Components/DateInput";
-import Button from "../../../Components/Button";
-import axios from "axios";
+import InformasiInstansi from "./Components/InformasiInstansi";
+import InformasiPelamar from "./Components/InformasiPelamar";
+import InformasiSurat from "./Components/InformasiSurat";
+import Title from "../../../../Components/Title";
+import SubTitle from "../../../../Components/SubTitle";
+import { Daftar } from "../../../../libs/api";
+import DropdownInput from "../../../../Components/DropdownInput";
+import TextInput from "../../../../Components/TextInput";
+import FileInput from "../../../../Components/FileInput";
+import DateInput from "../../../../Components/DateInput";
+import Button from "../../../../Components/Button";
 import { AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
@@ -96,15 +99,11 @@ const TambahPengajuan = () => {
     formData.append("pelamar", JSON.stringify(pelamarData));
 
     try {
-      await axios.post("http://localhost:8000/api/daftar", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await Daftar(formData);
       navigate("/admin/pengajuan");
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        setMsgForm(error.response.data.msg);
       }
     }
   };
@@ -126,72 +125,15 @@ const TambahPengajuan = () => {
         </Button>
       </div>
       <div className="flex flex-col justify-start gap-8 md:gap-4">
-        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-          <SubTitle>Informasi Instansi</SubTitle>
-          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
-            <DropdownInput
-              options={["SMA/SMK", "Perguruan Tinggi", "Kategori Lainnya"]}
-              title="Pilih Kategori"
-              label="Pilih Kategori:"
-              value={instansiData.kategori}
-              handleChange={(e) =>
-                setInstansiData({ ...instansiData, kategori: e.target.value })
-              }
-            />
-            <TextInput
-              label="Nama Instansi"
-              id="namaInstansi"
-              placeHolder="Masukan Nama Instansi"
-              value={instansiData.namaInstansi}
-              onChange={(e) =>
-                setInstansiData({
-                  ...instansiData,
-                  namaInstansi: e.target.value,
-                })
-              }
-            />
-            <TextInput
-              label="Alamat Instansi"
-              id="alamatInstansi"
-              placeHolder="Masukan Alamat Instansi"
-              value={instansiData.alamatInstansi}
-              onChange={(e) =>
-                setInstansiData({
-                  ...instansiData,
-                  alamatInstansi: e.target.value,
-                })
-              }
-            />
-          </div>
-        </div>
-        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-          <SubTitle>Informasi Surat</SubTitle>
-          <p className="text-error font-bold font-roboto">{msgFile}</p>
-          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
-            <FileInput
-              label="Unggah Surat Pengantar"
-              id="berkas"
-              onChange={handleFileChange}
-            />
-            <TextInput
-              label="No Surat"
-              id="noSurat"
-              placeHolder="Masukan Nomor Surat"
-              value={suratData.noSurat}
-              onChange={(e) =>
-                setSuratData({ ...suratData, noSurat: e.target.value })
-              }
-            />
-            <DateInput
-              id="tanggalPengajuan"
-              label="Tanggal Pengajuan"
-              value={suratData.tglPengajuan}
-              onChange={(e) =>
-                setSuratData({ ...suratData, tglPengajuan: e.target.value })
-              }
-            />
-          </div>
-        </div>
+        <InformasiInstansi
+          dataInstansi={instansiData}
+          setDataInstansi={setInstansiData}
+        />
+        <InformasiSurat
+          handleFileChange={handleFileChange}
+          suratData={suratData}
+          setSuratData={setSuratData}
+        />
         <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <SubTitle>Informasi Pelamar</SubTitle>
           <div className="w-3/5  mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">

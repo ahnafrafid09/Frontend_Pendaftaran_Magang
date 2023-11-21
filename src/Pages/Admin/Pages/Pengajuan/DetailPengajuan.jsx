@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from "react";
-import Title from "../../../Components/Title";
-import SubTitle from "../../../Components/SubTitle";
-import DropdownInput from "../../../Components/DropdownInput";
-import TextInput from "../../../Components/TextInput";
-import FileInput from "../../../Components/FileInput";
-import DateInput from "../../../Components/DateInput";
-import Button from "../../../Components/Button";
+import InformasiInstansi from "./Components/InformasiInstansi";
+import InformasiPelamar from "./Components/InformasiPelamar";
+import InformasiSurat from "./Components/InformasiSurat";
+import Title from "../../../../Components/Title";
+import DropdownInput from "../../../../Components/DropdownInput";
+import TextInput from "../../../../Components/TextInput";
+import DateInput from "../../../../Components/DateInput";
+import Button from "../../../../Components/Button";
+import {
+  updatePelamar,
+  updateInstansi,
+  updateSurat,
+  deletePelamar,
+  Tolak,
+  Terima,
+  getDaftarById,
+} from "../../../../libs/api";
 import { Modal } from "flowbite-react";
-import { AiOutlineArrowLeft, AiOutlineFilePdf } from "react-icons/ai";
+import { AiOutlineArrowLeft } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 
 const DetailPengajuan = () => {
-  // Ini Section State
   const [instansiData, setInstansiData] = useState({
     id: "",
     namaInstansi: "",
@@ -36,7 +44,7 @@ const DetailPengajuan = () => {
     bagian: "",
   });
 
-  const [alasan, setAlasan] = useState([]);
+  const [alasan, setAlasan] = useState("");
   const [pelamarData, setPelamarData] = useState([]);
   const [msgFile, setMsgFile] = useState("");
   const [msg, setMsg] = useState("");
@@ -47,7 +55,7 @@ const DetailPengajuan = () => {
 
   // Ini Section useEffect
   useEffect(() => {
-    getDaftarById();
+    getDaftar();
   }, []);
 
   // Ini Section handle Pelamar
@@ -65,16 +73,15 @@ const DetailPengajuan = () => {
     setPelamarData(updatedPelamarData);
   };
 
-  const updatedPelamar = (e, pelamarId) => {
+  const handleUpdatedPelamar = (e, pelamarId) => {
     e.preventDefault();
     const selectedPelamar = pelamarData.find(
       (pelamar) => pelamar.id === pelamarId
     );
-    axios
-      .patch(`http://localhost:8000/api/pelamar/${pelamarId}`, selectedPelamar)
+    updatePelamar(pelamarId, selectedPelamar)
       .then((response) => {
-        if (response.status === 200) {
-          toast.success(response.data.msg, {
+        if (response) {
+          toast.success(response.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -94,11 +101,10 @@ const DetailPengajuan = () => {
     e.preventDefault();
 
     if (pelamarData.length > 1) {
-      axios
-        .delete(`http://localhost:8000/api/pelamar/${pelamarId}`)
+      deletePelamar(pelamarId)
         .then((response) => {
-          if (response.status === 200) {
-            toast.error(response.data.msg, {
+          if (response) {
+            toast.error(response.msg, {
               position: "top-right",
               autoClose: 3000,
               hideProgressBar: true,
@@ -120,16 +126,12 @@ const DetailPengajuan = () => {
   };
 
   // Ini Section Handle Instansi
-  const updateInstansi = (e) => {
+  const handleUpdateInstansi = (e) => {
     e.preventDefault();
-    axios
-      .patch(
-        `http://localhost:8000/api/instansi/${instansiData.id}`,
-        instansiData
-      )
+    updateInstansi(instansiData.id, instansiData)
       .then((response) => {
-        if (response.status === 200) {
-          toast.success(response.data.msg, {
+        if (response) {
+          toast.success(response.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -166,7 +168,7 @@ const DetailPengajuan = () => {
       pdfFile: file,
     });
   };
-  const updateSurat = (e) => {
+  const handleUpdatedSurat = (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -175,17 +177,11 @@ const DetailPengajuan = () => {
     formData.append("noSurat", suratData.noSurat);
     formData.append("tglPengajuan", suratData.tglPengajuan);
 
-    axios
-      .patch(`http://localhost:8000/api/surat/${suratData.id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+    updateSurat(suratData.id, formData)
       .then((response) => {
-        if (response.status === 200) {
+        if (response) {
           window.location.reload();
-
-          toast.success(response.data.msg, {
+          toast.success(response.msg, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: true,
@@ -202,27 +198,28 @@ const DetailPengajuan = () => {
       });
   };
 
-  const getDaftarById = async () => {
+  const getDaftar = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/daftar/${instansiId}`
-      );
-      console.log(response.data);
-      if (response.data) {
+      const responseData = await getDaftarById(instansiId);
+
+      if (responseData) {
+        const { id, nama_instansi, alamat, kategori, status, surat, pelamars } =
+          responseData;
         setInstansiData({
-          id: response.data.id,
-          namaInstansi: response.data.nama_instansi,
-          alamatInstansi: response.data.alamat,
-          kategori: response.data.kategori,
+          id,
+          namaInstansi: nama_instansi,
+          alamatInstansi: alamat,
+          kategori,
+          status,
         });
         setSuratData({
-          id: response.data.surat.id,
-          pdfFile: response.data.surat.file,
-          url: response.data.surat.url,
-          noSurat: response.data.surat.no_surat,
-          tglPengajuan: response.data.surat.tanggal_pengajuan,
+          id: surat.id,
+          file: surat.fileName,
+          url: surat.url,
+          noSurat: surat.no_surat,
+          tglPengajuan: surat.tanggal_pengajuan,
         });
-        setPelamarData(response.data.pelamars);
+        setPelamarData(pelamars);
       } else {
         console.error("data tidak ada");
       }
@@ -236,10 +233,7 @@ const DetailPengajuan = () => {
     e.preventDefault();
 
     try {
-      await axios.patch(
-        `http://localhost:8000/api/daftar/tolak/${instansiId}`,
-        { alasan: alasan }
-      );
+      Tolak(instansiId, alasan);
       navigate("/admin/pengajuan");
     } catch (error) {
       console.log(error);
@@ -255,10 +249,7 @@ const DetailPengajuan = () => {
       setMsg("");
     }
     try {
-      await axios.post(
-        `http://localhost:8000/api/daftar/terima/${instansiId}`,
-        magangData
-      );
+      await Terima(instansiId, magangData);
       navigate("/admin/pengajuan");
     } catch (error) {
       console.log(error);
@@ -292,192 +283,26 @@ const DetailPengajuan = () => {
       </div>
       <ToastContainer />
       <div className="flex flex-col justify-start gap-8 md:gap-4">
-        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-          <div className="flex gap-2 items-center">
-            <SubTitle>Informasi Instansi</SubTitle>
-            <Button
-              bgColor="bg-primary-blue"
-              textColor="text-white"
-              paddingX="px-3"
-              paddingY="py-0.5"
-              onClick={updateInstansi}
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
-            <DropdownInput
-              options={["SMA/SMK", "Perguruan Tinggi", "Kategori Lainnya"]}
-              title="Pilih Kategori"
-              label="Pilih Kategori:"
-              value={instansiData.kategori}
-              handleChange={(e) =>
-                setInstansiData({ ...instansiData, kategori: e.target.value })
-              }
-            />
-            <TextInput
-              label="Nama Instansi"
-              id="namaInstansi"
-              placeHolder="Masukan Nama Instansi"
-              value={instansiData.namaInstansi}
-              onChange={(e) =>
-                setInstansiData({
-                  ...instansiData,
-                  namaInstansi: e.target.value,
-                })
-              }
-            />
-            <TextInput
-              label="Alamat Instansi"
-              id="alamatInstansi"
-              placeHolder="Masukan Alamat Instansi"
-              value={instansiData.alamatInstansi}
-              onChange={(e) =>
-                setInstansiData({
-                  ...instansiData,
-                  alamatInstansi: e.target.value,
-                })
-              }
-            />
-          </div>
-        </div>
-        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-          <div className="flex items-center gap-3">
-            <SubTitle>Informasi Surat</SubTitle>
-            <p className="text-error font-bold font-roboto">{msgFile}</p>
-            <Button
-              bgColor="bg-primary-blue"
-              textColor="text-white"
-              paddingX="px-3"
-              paddingY="py-0.5"
-              onClick={updateSurat}
-            >
-              Edit
-            </Button>
-          </div>
-          <div className="w-24 mt-3">
-            <Button
-              bgColor="bg-blue-900"
-              paddingX="px-2"
-              paddingY="py-1"
-              textColor="text-white"
-              navigate={suratData.url}
-              target="_blank"
-            >
-              Buka File
-            </Button>
-          </div>
-          <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
-            <FileInput
-              label="Unggah Perubahan Surat (Opsional)"
-              id="berkas"
-              onChange={handleFileChange}
-            />
-            <TextInput
-              label="No Surat"
-              id="noSurat"
-              placeHolder="Masukan Nomor Surat"
-              value={suratData.noSurat}
-              onChange={(e) =>
-                setSuratData({ ...suratData, noSurat: e.target.value })
-              }
-            />
-            <DateInput
-              id="tanggalPengajuan"
-              label="Tanggal Pengajuan"
-              value={suratData.tglPengajuan}
-              onChange={(e) =>
-                setSuratData({ ...suratData, tglPengajuan: e.target.value })
-              }
-            />
-          </div>
-        </div>
+        <InformasiInstansi
+          dataInstansi={instansiData}
+          handleUpdate={handleUpdateInstansi}
+          setDataInstansi={setInstansiData}
+        />
+        <InformasiSurat
+          msgFile={msgFile}
+          handleFileChange={handleFileChange}
+          suratData={suratData}
+          setSuratData={setSuratData}
+          handleUpdatedSurat={handleUpdatedSurat}
+        />
         {pelamarData.map((data, index) => (
-          <div
-            className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 "
-            key={data.id}
-          >
-            <div className="flex gap-3 items-center">
-              <SubTitle>Informasi Pelamar</SubTitle>
-              <Button
-                bgColor="bg-primary-blue"
-                textColor="text-white"
-                paddingX="px-3"
-                paddingY="py-0.5"
-                onClick={(e) => updatedPelamar(e, data.id)}
-              >
-                Edit
-              </Button>
-            </div>
-            <div className="w-3/5 mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-              <div className=" lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
-                <div>
-                  <TextInput
-                    label="Nama Lengkap"
-                    id={`namaLengkap ${index}`}
-                    placeHolder="Masukan Nama Lengkap"
-                    name="nama_lengkap"
-                    value={data.nama_lengkap}
-                    onChange={(e) => handlePelamarChange(e, data.id)}
-                  />
-                </div>
-                <div>
-                  <TextInput
-                    label="Alamat"
-                    id={`alamat ${index}`}
-                    name="alamat"
-                    placeHolder="Masukan Alamat"
-                    value={data.alamat}
-                    onChange={(e) => handlePelamarChange(e, data.id)}
-                  />
-                </div>
-                <div>
-                  <TextInput
-                    label="No Telepon"
-                    id={`noTelepon ${index}`}
-                    name="no_telepon"
-                    placeHolder="Masukan No Telepon"
-                    value={data.no_telepon}
-                    onChange={(e) => handlePelamarChange(e, data.id)}
-                  />
-                </div>
-              </div>
-              <div>
-                <TextInput
-                  label="No Induk"
-                  id={`noInduk ${index}`}
-                  name="no_induk"
-                  placeHolder="Masukan No Induk"
-                  value={data.no_induk}
-                  onChange={(e) => handlePelamarChange(e, data.id)}
-                />
-              </div>
-              <div className="lg:justify-self-center">
-                <TextInput
-                  label="Alamat Email"
-                  id={`alamatEmail ${index}`}
-                  type="email"
-                  name="email"
-                  placeHolder="Masukan Alamat Email"
-                  value={data.email}
-                  onChange={(e) => handlePelamarChange(e, data.id)}
-                />
-              </div>
-              {pelamarData.length > 1 && (
-                <div className="justify-self-end self-end">
-                  <Button
-                    bgColor="bg-error"
-                    textColor="text-white"
-                    paddingX="px-4"
-                    paddingY="py-2"
-                    onClick={(e) => handlePelamarDelete(e, data.id)}
-                  >
-                    Hapus Pelamar
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
+          <InformasiPelamar
+            key={index}
+            pelamarData={data}
+            handleUpdatedPelamar={handleUpdatedPelamar}
+            handlePelamarChange={handlePelamarChange}
+            handlePelamarDelete={handlePelamarDelete}
+          />
         ))}
         <div className="flex flex-col md:flex-row justify-center items-center gap-5">
           <div className="w-full md:w-1/2">

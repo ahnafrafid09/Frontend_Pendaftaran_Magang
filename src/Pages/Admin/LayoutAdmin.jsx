@@ -2,33 +2,35 @@ import React, { useState } from "react";
 import Navbar from "../../Components/Navbar";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "../../Components/Sidebar";
-import Dashboard from "./Pages/Dashboard";
-import Pengajuan from "./Pages/Pengajuan";
-import Magang from "./Pages/DataMagang";
-import Akun from "./Pages/Akun";
-import TambahPengajuan from "./Pages/TambahPengajuan";
-import DetailPengajuan from "./Pages/DetailPengajuan";
-import DetailMagang from "./Pages/DetailMagang";
-import HistoryMagang from "./Pages/HistoryMagang";
-import DetailHistory from "./Pages/DetailHistory";
+import Pengajuan from "./Pages/Pengajuan/Pengajuan";
+import Magang from "./Pages/Magang/DataMagang";
+import TambahPengajuan from "./Pages/Pengajuan/TambahPengajuan";
+import DetailPengajuan from "./Pages/Pengajuan/DetailPengajuan";
+import DetailMagang from "./Pages/Magang/DetailMagang";
+import HistoryMagang from "./Pages/History/HistoryMagang";
+import DetailHistory from "./Pages/History/DetailHistory";
+import Dashboard from "./Pages/Dashboard/Dashboard";
+import Akun from "./Pages/Akun/Akun";
 
 const LayoutAdmin = () => {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarClose, setSidebarClose] = useState(false);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
+    setSidebarClose(!isSidebarClose);
   };
 
   return (
     <>
       <div className="flex w-full lg:flex-row">
         <Navbar onToggleSidebar={toggleSidebar} />
-        <div className={`lg:w-[241px]${isSidebarOpen ? "block" : "hidden"}`}>
-          <Sidebar isOpen={isSidebarOpen} />
+        <div className={`lg:w-[241px]${isSidebarClose ? "hidden" : "block"}`}>
+          <Sidebar isClose={isSidebarClose} />
         </div>
         <main
           className={`w-full mt-24 p-4 lg:p-10 ${
-            isSidebarOpen ? "ml-0 lg:ml-[241px]" : "ml-0 lg:ml-8"
+            isSidebarClose
+              ? "ml-0 lg:ml-8 "
+              : "ml-0 lg:ml-[276px] lg:mt-[130px]"
           }`}
         >
           <Routes>

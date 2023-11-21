@@ -33,11 +33,11 @@ const sideList = [
   },
 ];
 
-const Sidebar = ({ isOpen }) => {
+const Sidebar = ({ isClose }) => {
   return (
     <div
       className={`w-60 z-10 bg-gradient-to-b from-[#E3F2FD] from-55.97% to-[#BBDEFB] h-screen fixed overflow-y-auto top-24 left-0 transition-transform transform ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        isClose ? "-translate-x-full" : "translate-x-0"
       }`}
     >
       <div className="p-2 pt-6 gap-4">

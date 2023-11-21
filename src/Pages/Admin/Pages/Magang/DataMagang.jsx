@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Button from "../../../Components/Button";
-import Title from "../../../Components/Title";
-import DataTable from "../../../Components/DataTable";
+import Button from "../../../../Components/Button";
+import Title from "../../../../Components/Title";
+import DataTable from "../../../../Components/DataTable";
 import { AiOutlineSearch } from "react-icons/ai";
-import Pagination from "../../../Components/Pagination";
+import Pagination from "../../../../Components/Pagination";
 import axios from "axios";
+import { getDaftarTerima } from "../../../../libs/api";
 
 const Magang = () => {
   const [magang, setMagang] = useState([]);
@@ -13,23 +14,28 @@ const Magang = () => {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     getMagang();
   }, [page, keyword]);
 
   const getMagang = async () => {
-    const response = await axios.get(
-      `http://localhost:8000/api/daftar-terima?search_query=${keyword}&page=${page}&limit=${limit}`
-    );
-    setMagang(response.data.result);
-    setPage(response.data.page);
-    setPages(response.data.totalPage);
-    setRows(response.data.totalRows);
+    const data = await getDaftarTerima(keyword, page, limit);
+    setMagang(data.result);
+    setPage(data.page);
+    setPages(data.totalPage);
+    setRows(data.totalRows);
   };
 
   const changePage = ({ selected }) => {
     setPage(selected);
+  };
+
+  const handleChangeSearchTerm = (e) => {
+    const term = e.target.value;
+    setQuery(term);
+    setKeyword(term);
   };
 
   const columnsMagang = [
@@ -76,18 +82,19 @@ const Magang = () => {
   return (
     <>
       <Title>Data Magang</Title>
-      <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
+      <div className="bg-blue-50 mt-14 mb-8 border-t-4 border-primary-blue rounded p-6">
         <div className="flex justify-end">
           <div className="relative text-gray-600">
-            <button type="submit" className="absolute left-2 top-0 mt-3 mr-4">
-              <AiOutlineSearch size="16px" />
-            </button>
             <input
               className="bg-white h-10 px-6 pr-10 rounded-full text-sm focus:outline-none w-64"
               type="search"
-              name="search"
+              value={query}
+              onChange={handleChangeSearchTerm}
               placeholder="Cari..."
             />
+            <div className="absolute left-2 top-0 mt-3 mr-4">
+              <AiOutlineSearch size="16px" />
+            </div>
           </div>
         </div>
         <div className="mt-8">

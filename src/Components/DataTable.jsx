@@ -1,6 +1,5 @@
 import React from "react";
 import { useTable, useSortBy } from "react-table";
-import { FaSortDown } from "react-icons/fa6";
 
 const DataTable = ({ data, columns }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import Button from "../../../Components/Button";
-import Pagination from "../../../Components/Pagination";
+import { getDaftarMenunggu } from "../../../../libs/api";
+import Button from "../../../../Components/Button";
+import Pagination from "../../../../Components/Pagination";
 import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai";
-import DataTable from "../../../Components/DataTable";
-import Title from "../../../Components/Title";
+import DataTable from "../../../../Components/DataTable";
+import Title from "../../../../Components/Title";
 
 const Pengajuan = () => {
   const [daftar, setDaftar] = useState([]);
@@ -14,24 +14,29 @@ const Pengajuan = () => {
   const [page, setPage] = useState(0);
   const [rows, setRows] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     getDaftar();
   }, [page, keyword]);
 
   const getDaftar = async () => {
-    const response = await axios.get(
-      `http://localhost:8000/api/daftar-menunggu?search_query=${keyword}&page=${page}&limit=${limit}`
-    );
-    setDaftar(response.data.result);
-    setPage(response.data.page);
-    setPages(response.data.totalPage);
-    setRows(response.data.totalRows);
+    const response = await getDaftarMenunggu(keyword, page, limit);
+    setDaftar(response.result);
+    setPage(response.page);
+    setPages(response.totalPage);
+    setRows(response.totalRows);
+    console.log(response);
   };
-  console.log(daftar);
 
   const changePage = ({ selected }) => {
     setPage(selected);
+  };
+  const handleSearch = (e) => {
+    const term = e.target.value;
+    setPage(0);
+    setKeyword(term);
+    setQuery(term);
   };
 
   const columnsPengajuan = [
@@ -105,7 +110,8 @@ const Pengajuan = () => {
               <input
                 className="bg-white h-10 px-6 pr-10 rounded-full text-sm focus:outline-none w-full sm:w-64"
                 type="search"
-                name="search"
+                value={query}
+                onChange={handleSearch}
                 placeholder="Cari..."
               />
             </div>
