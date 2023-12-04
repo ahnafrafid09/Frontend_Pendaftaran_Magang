@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Logo from "../assets/Logo Diskominfo Jabar.png";
-import Shape from "../assets/Shape.png";
+import Logo from "../../assets/Logo Diskominfo Jabar.png";
+import Shape from "../../assets/Shape.png";
 
 const Login = () => {
   const [username, setUsername] = useState("");

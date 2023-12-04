@@ -1,9 +1,9 @@
 import axios from "axios"
 
+
 const api = axios.create({ baseURL: "http://localhost:8000/api" })
 
 // Method Get
-
 export const getDaftar = async () => {
     try {
         const response = await api.get("/daftar")

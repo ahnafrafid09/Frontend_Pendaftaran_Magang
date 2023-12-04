@@ -1,5 +1,5 @@
 import React from "react";
-import Login from "./Pages/LogIn";
+import Login from "./Pages/Auth/Login";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import LayoutAdmin from "./Pages/Admin/LayoutAdmin";
 

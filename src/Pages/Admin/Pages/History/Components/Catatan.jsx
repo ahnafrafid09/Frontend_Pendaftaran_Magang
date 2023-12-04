@@ -12,6 +12,7 @@ const Catatan = ({ alasan }) => {
           name="Catatan"
           id="catatan"
           className="w-full bg-transparent h-28 py-5 px-6 border border-netral-black rounded"
+          disabled={true}
         >
           {alasan.alasan_tolak}
         </textarea>

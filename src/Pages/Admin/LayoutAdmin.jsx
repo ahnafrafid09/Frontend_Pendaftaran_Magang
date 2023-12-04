@@ -39,7 +39,7 @@ const LayoutAdmin = () => {
             <Route path="/magang" element={<Magang />} />
             <Route path="/akun" element={<Akun />} />
             <Route path="/history" element={<HistoryMagang />} />
-            <Route path="/pengajuan/tambah" element={<TambahPengajuan />} />
+            <Route path="/pengajuan/daftar" element={<TambahPengajuan />} />
             <Route
               path="/pengajuan/detail/:instansiId"
               element={<DetailPengajuan />}

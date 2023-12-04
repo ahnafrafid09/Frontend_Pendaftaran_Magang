@@ -26,7 +26,6 @@ const Pengajuan = () => {
     setPage(response.page);
     setPages(response.totalPage);
     setRows(response.totalRows);
-    console.log(response);
   };
 
   const changePage = ({ selected }) => {

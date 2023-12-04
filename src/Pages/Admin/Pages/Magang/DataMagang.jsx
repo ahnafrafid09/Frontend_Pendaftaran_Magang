@@ -20,7 +20,7 @@ const Magang = () => {
     getMagang();
   }, [page, keyword]);
 
-  const getMagang = async () => {
+  const getMagang = async () => { 
     const data = await getDaftarTerima(keyword, page, limit);
     setMagang(data.result);
     setPage(data.page);
