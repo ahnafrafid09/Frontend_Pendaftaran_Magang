@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import Title from "../../../../Components/Title";
-import { getDaftarById, updateStatus } from "../../../../libs/api";
 import InformasiMagang from "./Components/InformasiMagang";
 import InformasiSurat from "./Components/informasiSurat";
 import InformasiPelamar from "./Components/InformasiPelamar";
@@ -9,88 +8,36 @@ import { AiOutlineArrowLeft } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import InformasiInstansi from "./Components/InformasiInstansi";
+import { GetContext } from "../../../../Context/GetContext";
+import { UpdateContext } from "../../../../Context/UpdateContext";
+import { Spinner } from "flowbite-react";
 
 const DetailMagang = () => {
-  const [instansiData, setInstansiData] = useState({
-    id: "",
-    namaInstansi: "",
-    alamatInstansi: "",
-    kategori: "",
-    status: "",
-  });
-  const [magangData, setMagangData] = useState({
-    tglMasuk: "",
-    tglSelesai: "",
-  });
-  const [suratData, setSuratData] = useState({
-    file: "",
-    noSurat: "",
-    tglPengajuan: "",
-    url: "",
-  });
-  const [pelamarData, setPelamarData] = useState([]);
+  const { handleGet, stateGet } = useContext(GetContext);
+  const { handleUpdate } = useContext(UpdateContext);
+
+  const { magang, setMagang } = stateGet;
+  const { getDataById, resetFormData } = handleGet;
+  const { instansi, surat, pelamar, magangData, loading } = magang;
+  const { updateStatusMagang } = handleUpdate;
+
   const { instansiId } = useParams();
 
   useEffect(() => {
-    getDaftar();
+    getDataById(instansiId);
   }, []);
-
-  const getDaftar = async () => {
-    try {
-      const responseData = await getDaftarById(instansiId);
-      console.log(responseData);
-      if (responseData) {
-        const {
-          id,
-          nama_instansi,
-          alamat,
-          kategori,
-          status,
-          surat,
-          pelamars,
-          magang,
-        } = responseData;
-        setInstansiData({
-          id,
-          namaInstansi: nama_instansi,
-          alamatInstansi: alamat,
-          kategori,
-          status,
-        });
-        setSuratData({
-          file: surat.fileName,
-          url: surat.url,
-          noSurat: surat.no_surat,
-          tglPengajuan: surat.tanggal_pengajuan,
-        });
-        setPelamarData(pelamars);
-        setMagangData({
-          tglMasuk: magang.tanggal_masuk,
-          tglSelesai: magang.tanggal_selesai,
-        });
-      } else {
-        console.error("data tidak ada");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   // Update Status dan Tgl Masuk, Tgl Selesai
 
-  const updateStatusMagang = async (e) => {
+  const handleUpdateStatusMagang = async (e) => {
     e.preventDefault();
+
     try {
-      const result = await updateStatus(
-        instansiData.id,
-        instansiData.status,
-        magangData.tglMasuk,
-        magangData.tglSelesai
-      );
-      if (result.success) {
-        toast.success(result.message, {
+      const response = await updateStatusMagang(e, instansi.id);
+      console.log(response);
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: true,
@@ -117,32 +64,53 @@ const DetailMagang = () => {
           bgColor="bg-primary-blue"
           paddingY="py-2"
           paddingX="px-2.5"
+          onClick={resetFormData}
           style="text-sm md:text-base lg:text-lg"
         >
           Kembali
         </Button>
       </div>
-      <ToastContainer />
-      <div className="flex flex-col justify-start gap-8 md:gap-4">
-        <InformasiMagang
-          instansiData={instansiData}
-          setInstansiData={setInstansiData}
-          updateStatusMagang={updateStatusMagang}
-          magangData={magangData}
-          setMagangData={setMagangData}
-        />
-        <InformasiInstansi instansiData={instansiData} />
-        <InformasiSurat suratData={suratData} />
 
-        {pelamarData.map((data, index) => (
-          <div
-            className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 "
-            key={data.id}
-          >
-            <InformasiPelamar index={index} data={data} />
+      {loading ? (
+        <div className="text-center">
+          <Spinner aria-label="Center-aligned spinner" size="lg" />
+          <h1>Loading ...</h1>
+        </div>
+      ) : (
+        <>
+          <ToastContainer />
+          <div className="flex flex-col justify-start gap-8 md:gap-4">
+            <InformasiMagang
+              instansiData={instansi}
+              setInstansiData={(instansi) =>
+                setMagang({
+                  ...magang,
+                  instansi: instansi,
+                })
+              }
+              updateStatusMagang={handleUpdateStatusMagang}
+              magangData={magangData}
+              setMagangData={(magangData) =>
+                setMagang({
+                  ...magang,
+                  magangData: magangData,
+                })
+              }
+            />
+            <InformasiInstansi instansiData={instansi} />
+            <InformasiSurat suratData={surat} />
+
+            {pelamar.map((data, index) => (
+              <div
+                className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 "
+                key={data.id}
+              >
+                <InformasiPelamar index={index} data={data} />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </>
   );
 };

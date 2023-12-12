@@ -1,7 +1,9 @@
 import React from "react";
 import { useTable, useSortBy } from "react-table";
+import { LuChevronsUpDown } from "react-icons/lu";
+import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 
-const DataTable = ({ data, columns }) => {
+const DataTable = ({ data, columns, sortableColumns }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useSortBy);
   return (
@@ -20,18 +22,28 @@ const DataTable = ({ data, columns }) => {
                       {headerGroup.headers.map((column) => (
                         <th
                           {...column.getHeaderProps(
-                            column.getSortByToggleProps()
+                            sortableColumns.includes(column.Header)
+                              ? column.getSortByToggleProps()
+                              : {}
                           )}
                           className="border border-black p-4"
                         >
-                          {column.render("Header")}
-                          <span>
-                            {column.isSorted
-                              ? column.isSortedDesc
-                                ? " ⬇️"
-                                : " ⬆️"
-                              : ""}
-                          </span>
+                          <div className="flex justify-center items-center gap-10">
+                            <span>{column.render("Header")}</span>
+                            {sortableColumns.includes(column.Header) ? (
+                              <span>
+                                {column.isSorted ? (
+                                  column.isSortedDesc ? (
+                                    <AiOutlineArrowDown />
+                                  ) : (
+                                    <AiOutlineArrowUp />
+                                  )
+                                ) : (
+                                  <LuChevronsUpDown />
+                                )}
+                              </span>
+                            ) : null}
+                          </div>
                         </th>
                       ))}
                     </tr>

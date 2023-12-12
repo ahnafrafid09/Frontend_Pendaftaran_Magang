@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import InformasiInstansi from "./Components/InformasiInstansi";
 import InformasiPelamar from "./Components/InformasiPelamar";
 import InformasiSurat from "./Components/InformasiSurat";
@@ -7,60 +7,76 @@ import DropdownInput from "../../../../Components/DropdownInput";
 import TextInput from "../../../../Components/TextInput";
 import DateInput from "../../../../Components/DateInput";
 import Button from "../../../../Components/Button";
-import {
-  updatePelamar,
-  updateInstansi,
-  updateSurat,
-  deletePelamar,
-  Tolak,
-  Terima,
-  getDaftarById,
-} from "../../../../libs/api";
-import { Modal } from "flowbite-react";
+import { Modal, Spinner } from "flowbite-react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useNavigate, useParams } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GetContext } from "../../../../Context/GetContext";
+import { DeleteContext } from "../../../../Context/DeleteContext";
+import { UpdateContext } from "../../../../Context/UpdateContext";
+import { GlobalContext } from "../../../../Context/GlobalContext";
+import { PostContext } from "../../../../Context/PostContext";
 
 const DetailPengajuan = () => {
-  const [instansiData, setInstansiData] = useState({
-    id: "",
-    namaInstansi: "",
-    alamatInstansi: "",
-    kategori: "",
-  });
-  const [suratData, setSuratData] = useState({
-    id: "",
-    pdfFile: null,
-    noSurat: "",
-    tglPengajuan: "",
-    url: "",
-  });
+  // const { handle, stateForPost } = useContext(GlobalContext);
+  const { handleGet, stateGet } = useContext(GetContext);
+  const { handleDelete } = useContext(DeleteContext);
+  const { handleUpdate, stateUpdate } = useContext(UpdateContext);
+  const { handlePost, statePost } = useContext(PostContext);
 
-  const [magangData, setMagangData] = useState({
-    tglMasuk: "",
-    tglSelesai: "",
-    bagian: "",
-  });
-
-  const [alasan, setAlasan] = useState("");
-  const [pelamarData, setPelamarData] = useState([]);
-  const [msgFile, setMsgFile] = useState("");
-  const [msg, setMsg] = useState("");
+  const { pengajuan, setPengajuan } = stateGet;
+  const { instansi, surat, pelamar, loading } = pengajuan;
+  const { getDataById, resetFormData } = handleGet;
+  const { deletePelamar } = handleDelete;
+  const { setInputMagang, inputMagang, msg, setMsg } = statePost;
+  const { terimaPelamar } = handlePost;
+  const {
+    updateInstansi,
+    updatePelamar,
+    updateSurat,
+    handleFileChange,
+    tolakPelamar,
+  } = handleUpdate;
+  const { msgFile, alasan, setAlasan } = stateUpdate;
+  // const {
+  //   updatePelamar,
+  //   getDataById,
+  //   deletePelamar,
+  //   updateInstansi,
+  //   handleFileChange,
+  //   updateSurat,
+  //   tolakPelamar,
+  //   terimaPelamar,
+  // } = handle;
+  // const {
+  //   instansiData,
+  //   setInstansiData,
+  //   suratData,
+  //   setSuratData,
+  //   pelamarData,
+  //   setPelamarData,
+  //   alasan,
+  //   setAlasan,
+  //   setMsg,
+  //   msgFile,
+  //   magangData,
+  //   setMagangData,
+  //   msg,
+  // } = stateForPost;
   const [openModalTolak, setOpenModalTolak] = useState(false);
   const [openModalTerima, setOpenModalTerima] = useState(false);
   const { instansiId } = useParams();
-  const navigate = useNavigate();
 
   // Ini Section useEffect
   useEffect(() => {
-    getDaftar();
+    getDataById(instansiId);
   }, []);
 
   // Ini Section handle Pelamar
   const handlePelamarChange = (e, pelamarId) => {
-    const updatedPelamarData = pelamarData.map((pelamar) => {
+    const updatedPelamarData = pelamar.map((pelamar) => {
       if (pelamar.id === pelamarId) {
         return {
           ...pelamar,
@@ -70,187 +86,133 @@ const DetailPengajuan = () => {
       return pelamar;
     });
 
-    setPelamarData(updatedPelamarData);
+    setPengajuan((prevPengajuan) => ({
+      ...prevPengajuan,
+      pelamar: updatedPelamarData,
+    }));
   };
-
-  const handleUpdatedPelamar = (e, pelamarId) => {
-    e.preventDefault();
-    const selectedPelamar = pelamarData.find(
-      (pelamar) => pelamar.id === pelamarId
-    );
-    updatePelamar(pelamarId, selectedPelamar)
-      .then((response) => {
-        if (response) {
-          toast.success(response.msg, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Terjadi kesalahan:", error);
-      });
-  };
-  const handlePelamarDelete = (e, pelamarId) => {
-    e.preventDefault();
-
-    if (pelamarData.length > 1) {
-      deletePelamar(pelamarId)
-        .then((response) => {
-          if (response) {
-            toast.error(response.msg, {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
-          }
-          setPelamarData((prevPelamarData) =>
-            prevPelamarData.filter((pelamar) => pelamar.id !== pelamarId)
-          );
-        })
-        .catch((error) => {
-          console.error("Terjadi kesalahan:", error);
-        });
-    }
-  };
-
-  // Ini Section Handle Instansi
-  const handleUpdateInstansi = (e) => {
-    e.preventDefault();
-    updateInstansi(instansiData.id, instansiData)
-      .then((response) => {
-        if (response) {
-          toast.success(response.msg, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Terjadi kesalahan:", error);
-      });
-  };
-
-  // Ini Section Handle Surat
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-
-    if (file && !file.name.toLowerCase().endsWith(".pdf")) {
-      setMsgFile("Ekstensi file harus PDF");
-      e.target.value = "";
-      return;
-    }
-    if (file && file.size > 5 * 1024 * 1024) {
-      setMsgFile("Ukuran file harus kurang dari 5MB");
-      e.target.value = "";
-      return;
-    }
-    setMsgFile("");
-    setSuratData({
-      ...suratData,
-      pdfFile: file,
-    });
-  };
-  const handleUpdatedSurat = (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-
-    formData.append("pdfFile", suratData.pdfFile);
-    formData.append("noSurat", suratData.noSurat);
-    formData.append("tglPengajuan", suratData.tglPengajuan);
-
-    updateSurat(suratData.id, formData)
-      .then((response) => {
-        if (response) {
-          window.location.reload();
-          toast.success(response.msg, {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Terjadi kesalahan:", error);
-      });
-  };
-
-  const getDaftar = async () => {
+  const handleUpdatedPelamar = async (e, pelamarId) => {
     try {
-      const responseData = await getDaftarById(instansiId);
-
-      if (responseData) {
-        const { id, nama_instansi, alamat, kategori, status, surat, pelamars } =
-          responseData;
-        setInstansiData({
-          id,
-          namaInstansi: nama_instansi,
-          alamatInstansi: alamat,
-          kategori,
-          status,
+      const response = await updatePelamar(e, pelamarId);
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
         });
-        setSuratData({
-          id: surat.id,
-          file: surat.fileName,
-          url: surat.url,
-          noSurat: surat.no_surat,
-          tglPengajuan: surat.tanggal_pengajuan,
-        });
-        setPelamarData(pelamars);
-      } else {
-        console.error("data tidak ada");
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
-
-  // handle modal
-  const handleTolak = async (e) => {
-    e.preventDefault();
-
+  const handlePelamarDelete = async (e, pelamarId) => {
     try {
-      Tolak(instansiId, alasan);
-      navigate("/admin/pengajuan");
+      if (pelamar.length > 1) {
+        const response = await deletePelamar(e, pelamarId);
+        if (response.status === 200) {
+          toast.error(response.data.msg, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+        setPengajuan.pelamar((prevPelamarData) =>
+          prevPelamarData.filter((pelamar) => pelamar.id !== pelamarId)
+        );
+      } else {
+        toast.error("Data Pelamar Hanya 1 Tidak Bisa Dihapus", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Ini Section Handle Instansi
+  const handleUpdateInstansi = async (e) => {
+    try {
+      const response = await updateInstansi(e, instansiId);
+      console.log(response);
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Ini Section Handle Surat
+  const handleUpdatedSurat = async (e) => {
+    try {
+      const response = await updateSurat(e, surat.id);
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTolakPelamar = async (e) => {
+    e.preventDefault();
+    try {
+      await tolakPelamar(e, instansiId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleTerima = async (e) => {
     e.preventDefault();
-    if (!magangData.tglMasuk || !magangData.bagian || !magangData.tglSelesai) {
+    if (
+      !inputMagang.tglMasuk ||
+      !inputMagang.bagian ||
+      !inputMagang.tglSelesai
+    ) {
       setMsg("Harap Diisi Semua");
       return;
     } else {
       setMsg("");
     }
     try {
-      await Terima(instansiId, magangData);
-      navigate("/admin/pengajuan");
+      await terimaPelamar(e, instansiId);
     } catch (error) {
       console.log(error);
     }
@@ -258,7 +220,7 @@ const DetailPengajuan = () => {
 
   const onCloseModalTerima = () => {
     setOpenModalTerima(false);
-    setMagangData({
+    setInputMagang({
       tglMasuk: "",
       tglSelesai: "",
       bagian: "",
@@ -276,187 +238,213 @@ const DetailPengajuan = () => {
           bgColor="bg-primary-blue"
           paddingY="py-2"
           paddingX="px-2.5"
+          onClick={resetFormData}
           style="text-sm md:text-base lg:text-lg"
         >
           Kembali
         </Button>
       </div>
-      <ToastContainer />
-      <div className="flex flex-col justify-start gap-8 md:gap-4">
-        <InformasiInstansi
-          dataInstansi={instansiData}
-          handleUpdate={handleUpdateInstansi}
-          setDataInstansi={setInstansiData}
-        />
-        <InformasiSurat
-          msgFile={msgFile}
-          handleFileChange={handleFileChange}
-          suratData={suratData}
-          setSuratData={setSuratData}
-          handleUpdatedSurat={handleUpdatedSurat}
-        />
-        {pelamarData.map((data, index) => (
-          <InformasiPelamar
-            key={index}
-            pelamarData={data}
-            handleUpdatedPelamar={handleUpdatedPelamar}
-            handlePelamarChange={handlePelamarChange}
-            handlePelamarDelete={handlePelamarDelete}
-          />
-        ))}
-        <div className="flex flex-col md:flex-row justify-center items-center gap-5">
-          <div className="w-full md:w-1/2">
-            <Button
-              bgColor="bg-green-800"
-              paddingY="py-4"
-              paddingX="px-36"
-              textColor="text-white"
-              style="font-bold text-xl"
-              onClick={() => setOpenModalTerima(true)}
-            >
-              Terima
-            </Button>
-            <Modal
-              show={openModalTerima}
-              size="7xl"
-              onClose={onCloseModalTerima}
-              popup
-            >
-              <Modal.Header />
-              <Modal.Body>
-                <div className="text-center">
-                  <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-warning" />
-                  <h3 className="mb-5 text-lg font-roboto text-netral-black ">
-                    Isi Mulai Magang, Selesai Magang, dan Divisi Magang Dibawah!
-                  </h3>
-                  <div className="flex flex-col md:flex-row items-center justify-around mt-10">
-                    <DateInput
-                      id="tanggalMulai"
-                      label="Mulai Magang"
-                      value={magangData.tglMasuk}
-                      onChange={(e) =>
-                        setMagangData({
-                          ...magangData,
-                          tglMasuk: e.target.value,
-                        })
-                      }
-                    />
-                    <DateInput
-                      id="tanggalSelesai"
-                      label="Selesai Magang"
-                      value={magangData.tglSelesai}
-                      onChange={(e) =>
-                        setMagangData({
-                          ...magangData,
-                          tglSelesai: e.target.value,
-                        })
-                      }
-                    />
-                    <DropdownInput
-                      options={[
-                        "Sekretariat",
-                        "Statistik",
-                        "Aptika",
-                        "IKP",
-                        "Sandikami",
-                        "E-gov",
-                        "JDS",
-                      ]}
-                      title="Pilih Divisi"
-                      label="Pilih Divisi:"
-                      value={magangData.bagian}
-                      handleChange={(e) =>
-                        setMagangData({
-                          ...magangData,
-                          bagian: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <p className="text-error font-bold font-roboto">{msg}</p>
-                  <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
-                    <Button
-                      bgColor="bg-blue-800"
-                      textColor="text-white"
-                      paddingX="px-28"
-                      paddingY="py-1.5"
-                      onClick={handleTerima}
-                    >
-                      Konfirmasi
-                    </Button>
-                    <Button
-                      bgColor="bg-error"
-                      textColor="text-white"
-                      paddingX="px-28"
-                      paddingY="py-1.5"
-                      onClick={() => setOpenModalTerima(false)}
-                    >
-                      Batalkan
-                    </Button>
-                  </div>
-                </div>
-              </Modal.Body>
-            </Modal>
-          </div>
-          <div className="w-full md:w-1/2">
-            <Button
-              bgColor="bg-error"
-              paddingY="py-4"
-              paddingX="px-36"
-              textColor="text-white"
-              style="font-bold text-xl"
-              onClick={() => setOpenModalTolak(true)}
-            >
-              Tolak
-            </Button>
-            <Modal
-              show={openModalTolak}
-              size="md"
-              onClose={() => setOpenModalTolak(false)}
-              popup
-            >
-              <Modal.Header />
-              <Modal.Body>
-                <div className="text-center">
-                  <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-warning" />
-                  <h3 className="mb-5 text-lg font-roboto text-netral-black ">
-                    Anda Yakin Ingin Menolak Pengajuan Ini?
-                  </h3>
-                  <div className="my-4 flex justify-center items-center">
-                    <TextInput
-                      label="Masukan Alasan"
-                      id="alasan"
-                      placeHolder="Masukan Alasan Menolak"
-                      value={alasan}
-                      onChange={(e) => setAlasan(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex justify-center gap-4">
-                    <Button
-                      bgColor="bg-blue-800"
-                      textColor="text-white"
-                      paddingX="px-2.5"
-                      paddingY="py-1.5"
-                      onClick={handleTolak}
-                    >
-                      Konfirmasi
-                    </Button>
-                    <Button
-                      bgColor="bg-error"
-                      textColor="text-white"
-                      paddingX="px-2.5"
-                      paddingY="py-1.5"
-                      onClick={() => setOpenModalTolak(false)}
-                    >
-                      Batalkan
-                    </Button>
-                  </div>
-                </div>
-              </Modal.Body>
-            </Modal>
-          </div>
+      {loading ? (
+        <div className="text-center">
+          <Spinner aria-label="Center-aligned spinner" size="lg" />
+          <h1>Loading ...</h1>
         </div>
-      </div>
+      ) : (
+        <>
+          <ToastContainer />
+          <div className="flex flex-col justify-start gap-8 md:gap-4">
+            <InformasiInstansi
+              dataInstansi={instansi}
+              handleUpdate={handleUpdateInstansi}
+              setDataInstansi={(newInstansi) => {
+                setPengajuan({
+                  ...pengajuan,
+                  instansi: newInstansi,
+                });
+              }}
+            />
+            <InformasiSurat
+              msgFile={msgFile}
+              handleFileChange={handleFileChange}
+              suratData={surat}
+              setSuratData={(newSurat) => {
+                setPengajuan({
+                  ...pengajuan,
+                  surat: newSurat,
+                });
+              }}
+              handleUpdatedSurat={handleUpdatedSurat}
+            />
+            {pelamar.map((data, index) => (
+              <InformasiPelamar
+                key={index}
+                pelamarData={data}
+                handleUpdatedPelamar={handleUpdatedPelamar}
+                handlePelamarChange={handlePelamarChange}
+                handlePelamarDelete={handlePelamarDelete}
+              />
+            ))}
+            <div className="flex flex-col md:flex-row justify-center items-center gap-5">
+              <div className="w-full md:w-1/2">
+                <Button
+                  bgColor="bg-green-800"
+                  paddingY="py-4"
+                  paddingX="px-36"
+                  textColor="text-white"
+                  style="font-bold text-xl"
+                  onClick={() => setOpenModalTerima(true)}
+                >
+                  Terima
+                </Button>
+                <Modal
+                  show={openModalTerima}
+                  size="7xl"
+                  onClose={onCloseModalTerima}
+                  popup
+                >
+                  <Modal.Header />
+                  <Modal.Body>
+                    <div className="text-center">
+                      <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-warning" />
+                      <h3 className="mb-5 text-lg font-roboto text-netral-black ">
+                        Isi Mulai Magang, Selesai Magang, dan Divisi Magang
+                        Dibawah!
+                      </h3>
+                      <div className="flex flex-col md:flex-row items-center justify-around mt-10">
+                        <DateInput
+                          id="tanggalMulai"
+                          label="Mulai Magang"
+                          value={inputMagang.tglMasuk}
+                          onChange={(e) =>
+                            setInputMagang({
+                              ...inputMagang,
+                              tglMasuk: e.target.value,
+                            })
+                          }
+                        />
+                        <DateInput
+                          id="tanggalSelesai"
+                          label="Selesai Magang"
+                          value={inputMagang.tglSelesai}
+                          onChange={(e) =>
+                            setInputMagang({
+                              ...inputMagang,
+                              tglSelesai: e.target.value,
+                            })
+                          }
+                        />
+                        <DropdownInput
+                          options={[
+                            "Sekretariat",
+                            "Statistik",
+                            "Aptika",
+                            "IKP",
+                            "Sandikami",
+                            "E-gov",
+                            "JDS",
+                          ]}
+                          title="Pilih Divisi"
+                          label="Pilih Divisi:"
+                          value={inputMagang.bagian}
+                          handleChange={(e) =>
+                            setInputMagang({
+                              ...inputMagang,
+                              bagian: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <p className="text-error font-bold font-roboto">{msg}</p>
+                      <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
+                        <Button
+                          bgColor="bg-blue-800"
+                          textColor="text-white"
+                          paddingX="px-28"
+                          paddingY="py-1.5"
+                          onClick={handleTerima}
+                        >
+                          Konfirmasi
+                        </Button>
+                        <Button
+                          bgColor="bg-error"
+                          textColor="text-white"
+                          paddingX="px-28"
+                          paddingY="py-1.5"
+                          onClick={() => setOpenModalTerima(false)}
+                        >
+                          Batalkan
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal.Body>
+                </Modal>
+              </div>
+              <div className="w-full md:w-1/2">
+                <Button
+                  bgColor="bg-error"
+                  paddingY="py-4"
+                  paddingX="px-36"
+                  textColor="text-white"
+                  style="font-bold text-xl"
+                  onClick={() => setOpenModalTolak(true)}
+                >
+                  Tolak
+                </Button>
+                <Modal
+                  show={openModalTolak}
+                  size="md"
+                  onClose={() => setOpenModalTolak(false)}
+                  popup
+                >
+                  <Modal.Header />
+                  <Modal.Body>
+                    <div className="text-center">
+                      <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-warning" />
+                      <h3 className="mb-5 text-lg font-roboto text-netral-black ">
+                        Anda Yakin Ingin Menolak Pengajuan Ini?
+                      </h3>
+                      <div className="my-4 flex justify-center items-center">
+                        <TextInput
+                          label="Masukan Alasan"
+                          id="alasan"
+                          placeHolder="Masukan Alasan Menolak"
+                          value={alasan.alasan_tolak}
+                          onChange={(e) =>
+                            setAlasan({
+                              ...alasan,
+                              alasan_tolak: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex justify-center gap-4">
+                        <Button
+                          bgColor="bg-blue-800"
+                          textColor="text-white"
+                          paddingX="px-2.5"
+                          paddingY="py-1.5"
+                          onClick={handleTolakPelamar}
+                        >
+                          Konfirmasi
+                        </Button>
+                        <Button
+                          bgColor="bg-error"
+                          textColor="text-white"
+                          paddingX="px-2.5"
+                          paddingY="py-1.5"
+                          onClick={() => setOpenModalTolak(false)}
+                        >
+                          Batalkan
+                        </Button>
+                      </div>
+                    </div>
+                  </Modal.Body>
+                </Modal>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

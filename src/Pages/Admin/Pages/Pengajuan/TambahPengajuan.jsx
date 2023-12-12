@@ -1,112 +1,30 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import InformasiInstansi from "./Components/InformasiInstansi";
-import InformasiPelamar from "./Components/InformasiPelamar";
 import InformasiSurat from "./Components/InformasiSurat";
 import Title from "../../../../Components/Title";
 import SubTitle from "../../../../Components/SubTitle";
-import { Daftar } from "../../../../libs/api";
-import DropdownInput from "../../../../Components/DropdownInput";
 import TextInput from "../../../../Components/TextInput";
-import FileInput from "../../../../Components/FileInput";
-import DateInput from "../../../../Components/DateInput";
 import Button from "../../../../Components/Button";
 import { AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "../../../../Context/GlobalContext";
 
 const TambahPengajuan = () => {
-  const [instansiData, setInstansiData] = useState({
-    namaInstansi: "",
-    alamatInstansi: "",
-    kategori: "",
-  });
-  const [suratData, setSuratData] = useState({
-    pdfFile: null,
-    noSurat: "",
-    tglPengajuan: "",
-  });
+  const { handle, stateForPost } = useContext(GlobalContext);
 
-  const [pelamarData, setPelamarData] = useState([]);
+  const {
+    instansiData,
+    setInstansiData,
+    pelamarData,
+    newPelamar,
+    setNewPelamar,
+    suratData,
+    setSuratData,
+    msg,
+    msgForm,
+    msgFile,
+  } = stateForPost;
 
-  const [msg, setMsg] = useState("");
-  const [msgFile, setMsgFile] = useState("");
-  const [msgForm, setMsgForm] = useState("");
-  const [newPelamar, setNewPelamar] = useState({
-    namaLengkap: "",
-    alamat: "",
-    email: "",
-    noInduk: "",
-    noTelp: "",
-  });
-
-  const navigate = useNavigate();
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && !file.name.toLowerCase().endsWith(".pdf")) {
-      setMsgFile("Ekstensi file harus PDF");
-      e.target.value = "";
-      return;
-    }
-    if (file && file.size > 5 * 1024 * 1024) {
-      setMsgFile("Ukuran file harus kurang dari 5MB");
-      e.target.value = "";
-      return;
-    }
-    setMsgFile("");
-    setSuratData({
-      ...suratData,
-      pdfFile: file,
-    });
-  };
-
-  const addPelamar = () => {
-    if (
-      newPelamar.namaLengkap &&
-      newPelamar.alamat &&
-      newPelamar.email &&
-      newPelamar.noInduk &&
-      newPelamar.noTelp
-    ) {
-      setPelamarData([...pelamarData, newPelamar]);
-      setNewPelamar({
-        namaLengkap: "",
-        alamat: "",
-        email: "",
-        noInduk: "",
-        noTelp: "",
-      });
-      setMsg("");
-    } else {
-      setMsg("Harap isi semua kolom data pelamar");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData();
-
-    // Menambahkan data Instansi ke form data
-    formData.append("namaInstansi", instansiData.namaInstansi);
-    formData.append("alamatInstansi", instansiData.alamatInstansi);
-    formData.append("kategori", instansiData.kategori);
-
-    // Menambahkan data Surat ke form data
-    formData.append("pdfFile", suratData.pdfFile);
-    formData.append("noSurat", suratData.noSurat);
-    formData.append("tglPengajuan", suratData.tglPengajuan);
-
-    formData.append("pelamar", JSON.stringify(pelamarData));
-
-    try {
-      await Daftar(formData);
-      navigate("/admin/pengajuan");
-    } catch (error) {
-      if (error.response) {
-        setMsgForm(error.response.data.msg);
-      }
-    }
-  };
+  const { handleFileChange, addPelamar, tambahPengajuan } = handle;
 
   return (
     <>
@@ -132,12 +50,13 @@ const TambahPengajuan = () => {
         <InformasiSurat
           handleFileChange={handleFileChange}
           suratData={suratData}
+          msgFile={msgFile}
           setSuratData={setSuratData}
         />
         <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <SubTitle>Informasi Pelamar</SubTitle>
-          <div className="w-3/5  mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            <div className=" lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
+          <div className="mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            <div className="lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
               <div className="">
                 <TextInput
                   label="Nama Lengkap"
@@ -265,7 +184,7 @@ const TambahPengajuan = () => {
           paddingY="py-3"
           paddingX="px-2"
           textColor="text-white text-2xl font-medium"
-          onClick={handleSubmit}
+          onClick={tambahPengajuan}
         >
           Simpan Data
         </Button>

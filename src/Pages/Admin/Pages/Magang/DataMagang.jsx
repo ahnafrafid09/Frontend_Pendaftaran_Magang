@@ -1,42 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "../../../../Components/Button";
 import Title from "../../../../Components/Title";
 import DataTable from "../../../../Components/DataTable";
 import { AiOutlineSearch } from "react-icons/ai";
 import Pagination from "../../../../Components/Pagination";
-import axios from "axios";
 import { getDaftarTerima } from "../../../../libs/api";
+import { GlobalContext } from "../../../../Context/GlobalContext";
+import { GetContext } from "../../../../Context/GetContext";
+import { Spinner } from "flowbite-react";
 
 const Magang = () => {
-  const [magang, setMagang] = useState([]);
-  const [pages, setPages] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-  const [rows, setRows] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const [query, setQuery] = useState("");
+  const { handleGet, stateGet } = useContext(GetContext);
+
+  const { dataMagang } = stateGet;
+  const { getDataMagang, changePage, handleChangeSearchTerm } = handleGet;
+  const { datas, page, rows, pages, query, loading, keyword } = dataMagang;
 
   useEffect(() => {
-    getMagang();
+    getDataMagang();
   }, [page, keyword]);
-
-  const getMagang = async () => { 
-    const data = await getDaftarTerima(keyword, page, limit);
-    setMagang(data.result);
-    setPage(data.page);
-    setPages(data.totalPage);
-    setRows(data.totalRows);
-  };
-
-  const changePage = ({ selected }) => {
-    setPage(selected);
-  };
-
-  const handleChangeSearchTerm = (e) => {
-    const term = e.target.value;
-    setQuery(term);
-    setKeyword(term);
-  };
 
   const columnsMagang = [
     { Header: "No", accessor: (row, index) => index + 1 },
@@ -79,6 +61,12 @@ const Magang = () => {
       ),
     },
   ];
+  const sortTableColumns = [
+    "Instansi",
+    "Mulai Magang",
+    "Selesai Magang",
+    "Nomor Id",
+  ];
   return (
     <>
       <Title>Data Magang</Title>
@@ -89,7 +77,7 @@ const Magang = () => {
               className="bg-white h-10 px-6 pr-10 rounded-full text-sm focus:outline-none w-64"
               type="search"
               value={query}
-              onChange={handleChangeSearchTerm}
+              onChange={(e) => handleChangeSearchTerm(e, "dataMagang")}
               placeholder="Cari..."
             />
             <div className="absolute left-2 top-0 mt-3 mr-4">
@@ -98,15 +86,30 @@ const Magang = () => {
           </div>
         </div>
         <div className="mt-8">
-          <DataTable data={magang} columns={columnsMagang} />
-          <div className="mt-4">
-            <Pagination
-              rows={rows}
-              page={page}
-              pages={pages}
-              changePage={changePage}
-            />
-          </div>
+          {loading ? (
+            <div className="text-center">
+              <Spinner aria-label="Center-aligned spinner" size="lg" />
+              <h1>Loading ...</h1>
+            </div>
+          ) : (
+            <>
+              <DataTable
+                data={datas}
+                columns={columnsMagang}
+                sortableColumns={sortTableColumns}
+              />
+              <div className="mt-4">
+                <Pagination
+                  rows={rows}
+                  page={page}
+                  pages={pages}
+                  changePage={(selected) =>
+                    changePage({ selected }, "dataMagang")
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>

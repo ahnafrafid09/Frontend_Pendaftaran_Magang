@@ -27,7 +27,7 @@ const InformasiPelamar = ({
           ""
         )}
       </div>
-      <div className="w-3/5 mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+      <div className="mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         <div className=" lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
           <div>
             <TextInput
@@ -81,7 +81,7 @@ const InformasiPelamar = ({
             onChange={(e) => handlePelamarChange(e, pelamarData.id)}
           />
         </div>
-        {pelamarData.length > 1 && (
+        {pelamarData && (
           <div className="justify-self-end self-end">
             <Button
               bgColor="bg-error"

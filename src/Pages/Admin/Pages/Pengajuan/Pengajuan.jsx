@@ -1,42 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { getDaftarMenunggu } from "../../../../libs/api";
+import { GetContext } from "../../../../Context/GetContext";
 import Button from "../../../../Components/Button";
 import Pagination from "../../../../Components/Pagination";
 import { AiOutlinePlus, AiOutlineSearch } from "react-icons/ai";
 import DataTable from "../../../../Components/DataTable";
 import Title from "../../../../Components/Title";
+import { Spinner } from "flowbite-react";
 
 const Pengajuan = () => {
-  const [daftar, setDaftar] = useState([]);
-  const [pages, setPages] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-  const [rows, setRows] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const [query, setQuery] = useState("");
+  const { stateGet, handleGet } = useContext(GetContext);
+  const { dataPengajuan } = stateGet;
+  const { datas, query, page, pages, rows, loading, keyword } = dataPengajuan;
+  const { getPengajuanMagang, changePage, handleChangeSearchTerm } = handleGet;
 
   useEffect(() => {
-    getDaftar();
+    getPengajuanMagang();
   }, [page, keyword]);
-
-  const getDaftar = async () => {
-    const response = await getDaftarMenunggu(keyword, page, limit);
-    setDaftar(response.result);
-    setPage(response.page);
-    setPages(response.totalPage);
-    setRows(response.totalRows);
-  };
-
-  const changePage = ({ selected }) => {
-    setPage(selected);
-  };
-  const handleSearch = (e) => {
-    const term = e.target.value;
-    setPage(0);
-    setKeyword(term);
-    setQuery(term);
-  };
 
   const columnsPengajuan = [
     { id: "no", Header: "No", accessor: (_, index) => index + 1 },
@@ -86,18 +66,18 @@ const Pengajuan = () => {
       ),
     },
   ];
+  const sortTableColumns = ["Instansi", "Nomor ID", "Tanggal Pengajuan"];
 
   return (
     <div>
       <Title>Pengajuan Magang</Title>
       <div className="mt-6">
         <div className="w-full flex justify-end pr-6">
-          <Link
-            to="/admin/pengajuan/tambah"
-            className="flex items-center gap-2 bg-primary-blue text-white py-2.5 px-4 rounded-lg"
-          >
-            <AiOutlinePlus />
-            <h1 className="hidden md:block">Tambah Pengajuan</h1>
+          <Link to="/admin/pengajuan/daftar">
+            <button className="flex items-center gap-2 bg-primary-blue text-white py-2.5 px-4 rounded-lg">
+              <AiOutlinePlus />
+              <h1 className="hidden md:block">Tambah Pengajuan</h1>
+            </button>
           </Link>
         </div>
         <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
@@ -110,21 +90,36 @@ const Pengajuan = () => {
                 className="bg-white h-10 px-6 pr-10 rounded-full text-sm focus:outline-none w-full sm:w-64"
                 type="search"
                 value={query}
-                onChange={handleSearch}
+                onChange={(e) => handleChangeSearchTerm(e, "dataPengajuan")}
                 placeholder="Cari..."
               />
             </div>
           </div>
           <div className="mt-8">
-            <DataTable data={daftar} columns={columnsPengajuan} />
-            <div className="mt-4">
-              <Pagination
-                rows={rows}
-                page={page}
-                pages={pages}
-                changePage={changePage}
-              />
-            </div>
+            {loading ? (
+              <div className="text-center">
+                <Spinner aria-label="Center-aligned spinner" size="lg" />
+                <h1>Loading ...</h1>
+              </div>
+            ) : (
+              <>
+                <DataTable
+                  data={datas}
+                  columns={columnsPengajuan}
+                  sortableColumns={sortTableColumns}
+                />
+                <div className="mt-4">
+                  <Pagination
+                    rows={rows}
+                    page={page}
+                    pages={pages}
+                    changePage={(selected) =>
+                      changePage({ selected }, "dataPengajuan")
+                    }
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

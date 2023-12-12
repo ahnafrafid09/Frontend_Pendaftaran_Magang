@@ -1,40 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { getDaftarSelesai } from "../../../../libs/api";
 import Button from "../../../../Components/Button";
 import Pagination from "../../../../Components/Pagination";
 import DataTable from "../../../../Components/DataTable";
 import Title from "../../../../Components/Title";
 import { AiOutlineSearch } from "react-icons/ai";
+import { GlobalContext } from "../../../../Context/GlobalContext";
+import { GetContext } from "../../../../Context/GetContext";
+import { Spinner } from "flowbite-react";
 
 const HistoryMagang = () => {
-  const [history, setHistory] = useState([]);
-  const [pages, setPages] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-  const [rows, setRows] = useState(0);
-  const [keyword, setKeyword] = useState("");
+  const { handleGet, stateGet } = useContext(GetContext);
+  const { dataHistory } = stateGet;
+  const { getDataHistory, changePage, handleChangeSearchTerm } = handleGet;
+  const { datas, page, rows, pages, query, loading, keyword } = dataHistory;
 
   useEffect(() => {
-    getDaftar();
+    getDataHistory();
   }, [page, keyword]);
-
-  const getDaftar = async () => {
-    const data = await getDaftarSelesai(keyword, page, limit);
-    setHistory(data.result);
-    setPage(data.page);
-    setPages(data.totalPage);
-    setRows(data.totalRows);
-  };
-
-  const changePage = ({ selected }) => {
-    setPage(selected);
-  };
-
-  const handleChangeSearchTerm = (e) => {
-    const term = e.target.value;
-    setQuery(term);
-    setKeyword(term);
-  };
 
   const columnsHistory = [
     { Header: "No", accessor: (row, index) => index + 1 },
@@ -75,6 +58,8 @@ const HistoryMagang = () => {
     },
   ];
 
+  const sortTableColumns = ["Instansi"];
+
   return (
     <>
       <Title>History Magang</Title>
@@ -88,21 +73,37 @@ const HistoryMagang = () => {
               className="bg-white h-10 px-6 pr-10 rounded-full text-sm focus:outline-none w-64"
               type="search"
               name="search"
-              onChange={handleChangeSearchTerm}
+              value={query}
+              onChange={(e) => handleChangeSearchTerm(e, "dataHistory")}
               placeholder="Cari..."
             />
           </div>
         </div>
         <div className="mt-8">
-          <DataTable data={history} columns={columnsHistory} />
-          <div className="mt-4">
-            <Pagination
-              rows={rows}
-              pages={pages}
-              page={page}
-              changePage={changePage}
-            />
-          </div>
+          {loading ? (
+            <div className="text-center">
+              <Spinner aria-label="Center-aligned spinner" size="lg" />
+              <h1>Loading ...</h1>
+            </div>
+          ) : (
+            <>
+              <DataTable
+                data={datas}
+                columns={columnsHistory}
+                sortableColumns={sortTableColumns}
+              />
+              <div className="mt-4">
+                <Pagination
+                  rows={rows}
+                  pages={pages}
+                  page={page}
+                  changePage={(selected) =>
+                    changePage({ selected }, "dataHistory")
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
