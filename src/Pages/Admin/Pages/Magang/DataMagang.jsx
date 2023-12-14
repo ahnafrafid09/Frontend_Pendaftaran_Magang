@@ -4,7 +4,6 @@ import Title from "../../../../Components/Title";
 import DataTable from "../../../../Components/DataTable";
 import { AiOutlineSearch } from "react-icons/ai";
 import Pagination from "../../../../Components/Pagination";
-import { getDaftarTerima } from "../../../../libs/api";
 import { GlobalContext } from "../../../../Context/GlobalContext";
 import { GetContext } from "../../../../Context/GetContext";
 import { Spinner } from "flowbite-react";

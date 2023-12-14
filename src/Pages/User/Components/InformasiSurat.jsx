@@ -1,9 +1,9 @@
 import React from "react";
-import SubTitle from "../../../../../Components/SubTitle";
-import Button from "../../../../../Components/Button";
-import TextInput from "../../../../../Components/TextInput";
-import DateInput from "../../../../../Components/DateInput";
-import FileInput from "../../../../../Components/FileInput";
+import SubTitle from "../../../Components/SubTitle";
+import Button from "../../../Components/Button";
+import TextInput from "../../../Components/TextInput";
+import DateInput from "../../../Components/DateInput";
+import FileInput from "../../../Components/FileInput";
 
 const InformasiSurat = ({
   handleUpdatedSurat,

@@ -4,18 +4,12 @@ import { Routes, Route } from "react-router-dom";
 import { GlobalProvider } from "../../Context/GlobalContext";
 import { GetProvider } from "../../Context/GetContext";
 import Sidebar from "../../Components/Sidebar";
-import Pengajuan from "./Pages/Pengajuan/Pengajuan";
-import Magang from "./Pages/Magang/DataMagang";
-import TambahPengajuan from "./Pages/Pengajuan/TambahPengajuan";
-import DetailPengajuan from "./Pages/Pengajuan/DetailPengajuan";
-import DetailMagang from "./Pages/Magang/DetailMagang";
-import HistoryMagang from "./Pages/History/HistoryMagang";
-import DetailHistory from "./Pages/History/DetailHistory";
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import Akun from "./Pages/Akun/Akun";
 import { PostProvider } from "../../Context/PostContext";
 import { UpdateProvider } from "../../Context/UpdateContext";
 import { DeleteProvider } from "../../Context/DeleteContext";
+import Pengajuan from "./Page/Pengajuan";
+import Daftar from "./Page/Daftar";
+import Magang from "./Page/Magang";
 
 const LayoutAdmin = () => {
   const [isSidebarClose, setSidebarClose] = useState(false);
@@ -44,27 +38,9 @@ const LayoutAdmin = () => {
                 <DeleteProvider>
                   <PostProvider>
                     <Routes>
-                      <Route path="/pengajuan" element={<Pengajuan />} />
+                      <Route axact path="/pengajuan" element={<Pengajuan />} />
+                      <Route path="/daftar" element={<Daftar />} />
                       <Route path="/magang" element={<Magang />} />
-                      <Route path="/akun" element={<Akun />} />
-                      <Route path="/history" element={<HistoryMagang />} />
-                      <Route
-                        path="/pengajuan/daftar"
-                        element={<TambahPengajuan />}
-                      />
-                      <Route
-                        path="/pengajuan/detail/:instansiId"
-                        element={<DetailPengajuan />}
-                      />
-                      <Route
-                        path="/magang/detail/:instansiId"
-                        element={<DetailMagang />}
-                      />
-                      <Route
-                        path="/history/detail/:instansiId"
-                        element={<DetailHistory />}
-                      />
-                      <Route path="/" element={<Dashboard />} />
                     </Routes>
                   </PostProvider>
                 </DeleteProvider>

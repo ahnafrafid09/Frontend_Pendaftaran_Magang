@@ -35,7 +35,6 @@ const DetailMagang = () => {
 
     try {
       const response = await updateStatusMagang(e, instansi.id);
-      console.log(response);
       if (response.status === 200) {
         toast.success(response.data.msg, {
           position: "top-right",
@@ -49,7 +48,7 @@ const DetailMagang = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

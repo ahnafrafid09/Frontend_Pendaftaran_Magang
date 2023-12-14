@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
-import InformasiInstansi from "./Components/InformasiInstansi";
-import InformasiSurat from "./Components/InformasiSurat";
-import Title from "../../../../Components/Title";
-import SubTitle from "../../../../Components/SubTitle";
-import TextInput from "../../../../Components/TextInput";
-import Button from "../../../../Components/Button";
+import InformasiInstansi from "../Components/InformasiInstansi";
+import InformasiSurat from "../Components/InformasiSurat";
 import { AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
-import { PostContext } from "../../../../Context/PostContext";
+import { PostContext } from "../../../Context/PostContext";
+import Title from "../../../Components/Title";
+import SubTitle from "../../../Components/SubTitle";
+import Button from "../../../Components/Button";
+import TextInput from "../../../Components/TextInput";
 
-const TambahPengajuan = () => {
+const Daftar = () => {
   const { handlePost, statePost } = useContext(PostContext);
 
   const {
@@ -44,7 +44,7 @@ const TambahPengajuan = () => {
       <div className="flex justify-start items-center mt-5">
         <Button
           textColor="text-white"
-          navigate="/admin/pengajuan"
+          navigate="/pengajuan"
           icon={<AiOutlineArrowLeft />}
           bgColor="bg-primary-blue"
           paddingY="py-2"
@@ -206,4 +206,4 @@ const TambahPengajuan = () => {
   );
 };
 
-export default TambahPengajuan;
+export default Daftar;

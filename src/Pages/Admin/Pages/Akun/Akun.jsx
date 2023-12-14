@@ -6,16 +6,20 @@ import DataTable from "../../../../Components/DataTable";
 import { AiOutlineSearch, AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { Spinner } from "flowbite-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Pagination from "../../../../Components/Pagination";
 import TambahAkun from "./TambahAkun";
 import EditAkun from "./EditAkun";
+import { DeleteContext } from "../../../../Context/DeleteContext";
 
 const Akun = () => {
   const { handleGet, stateGet } = useContext(GetContext);
+  const { handleDelete } = useContext(DeleteContext);
   const { getDataUser, handleChangeSearchTerm, changePage } = handleGet;
   const { dataUser } = stateGet;
   const { datas, query, page, pages, rows, loading, keyword } = dataUser;
-  console.log("data user", dataUser);
+  const { deleteAkun } = handleDelete;
 
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [openModalTambah, setOpenModalTambah] = useState(false);
@@ -29,6 +33,27 @@ const Akun = () => {
   useEffect(() => {
     getDataUser();
   }, [page, keyword]);
+
+  const handleDeleteAkun = async (e, userId) => {
+    e.preventDefault();
+    try {
+      const response = await deleteAkun(e, userId);
+      if (response.status === 200) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const columnsUser = [
     { Header: "No", accessor: (row, index) => index + 1 },
@@ -57,6 +82,7 @@ const Akun = () => {
             paddingX="px-4"
             style="w-20"
             textColor="text-netral-white"
+            onClick={(e) => handleDeleteAkun(e, value)}
           >
             Hapus
           </Button>
@@ -89,6 +115,7 @@ const Akun = () => {
             />
           )}
         </div>
+        <ToastContainer />
         <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">
           <div className="flex justify-end">
             <div className="relative text-gray-600">

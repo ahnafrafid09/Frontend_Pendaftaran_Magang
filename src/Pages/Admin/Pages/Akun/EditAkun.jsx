@@ -6,40 +6,47 @@ import Button from "../../../../Components/Button";
 import { PostContext } from "../../../../Context/PostContext";
 import { GetContext } from "../../../../Context/GetContext";
 import { useEffect } from "react";
+import { UpdateContext } from "../../../../Context/UpdateContext";
 
 const EditAkun = ({ close, idUser }) => {
-  const { handlePost, statePost } = useContext(PostContext);
   const { handleGet, stateGet } = useContext(GetContext);
-  const { getDataUserById } = handleGet;
-  const { user, setUser } = stateGet;
-  const { name, username, newPassword, confPassword, email, role } = user;
-  const { inputUser, setInputUser, msg } = statePost;
-  const { tambahUser } = handlePost;
+  const { handleUpdate, stateUpdate } = useContext(UpdateContext);
+  const { updateUser } = handleUpdate;
+  const { msg } = stateUpdate;
+  const { getDataUserById, resetFormData } = handleGet;
+  const { akun, setAkun, inputNewPassword, setInputNewPassword } = stateGet;
+  const { name, username, email, role, id } = akun.user;
+  const { newPassword, confNewPassword } = inputNewPassword;
 
   useEffect(() => {
     getDataUserById(idUser);
   }, []);
 
-  const handleTambahUser = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await tambahUser();
-      console.log(response);
-      if (response.status === 201) {
-        close();
-        window.location.reload();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleChangeInput = (e) => {
     const { id, value } = e.target;
-    setInputUser((prevInputUser) => ({
+    setAkun((prevInputUser) => ({
       ...prevInputUser,
+      user: {
+        ...prevInputUser.user,
+        [id]: value,
+      },
+    }));
+    setInputNewPassword((prevInputNewPassword) => ({
+      ...prevInputNewPassword,
       [id]: value,
     }));
+  };
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await updateUser(e, id);
+      if (response.status === 200) {
+        close();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -81,15 +88,15 @@ const EditAkun = ({ close, idUser }) => {
           <TextInput
             label="New Password"
             type="password"
-            id="password"
-            value={password}
+            id="newPassword"
+            value={newPassword}
             onChange={handleChangeInput}
           />
           <TextInput
             label="Konfirmasi Password"
             type="password"
-            id="confPassword"
-            value={confPassword}
+            id="confNewPassword"
+            value={confNewPassword}
             onChange={handleChangeInput}
           />
         </Modal.Body>
@@ -100,7 +107,7 @@ const EditAkun = ({ close, idUser }) => {
             paddingX="px-4"
             style="w-20"
             textColor="text-netral-white"
-            onClick={handleTambahUser}
+            onClick={handleUpdateUser}
           >
             Simpan
           </Button>

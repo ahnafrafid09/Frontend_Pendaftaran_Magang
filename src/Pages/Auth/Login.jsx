@@ -17,8 +17,9 @@ const Login = () => {
         username: username,
         password: password,
       });
-      console.log(response);
-      navigate("/admin");
+      response.data.role === "admin"
+        ? navigate("/admin")
+        : navigate("/pengajuan");
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);

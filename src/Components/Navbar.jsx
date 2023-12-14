@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import Logo from "../assets/Logo Diskominfo Jabar.png";
-import { IoReorderThreeOutline } from "react-icons/io5";
+import { IoReorderThreeOutline, IoCloseOutline } from "react-icons/io5";
 import { GlobalContext } from "../Context/GlobalContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = ({ onToggleSidebar }) => {
+const Navbar = ({ onToggleSidebar, isClose }) => {
   const navigate = useNavigate();
   const { globalContext } = useContext(GlobalContext);
   const { name } = globalContext;
@@ -15,15 +15,19 @@ const Navbar = ({ onToggleSidebar }) => {
       await axios.delete("http://localhost:8000/api/logout");
       navigate("/login");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   return (
     <div className="w-screen fixed top-0 left-0 z-20  h-24 bg-gradient-to-r from-[#E3F2FD] from-55.97% to-[#BBDEFB] shadow-md shadow[#475d7c]">
       <div className="flex justify-between items-center p-6">
-        <button onClick={onToggleSidebar}>
-          <IoReorderThreeOutline size="30px" />
+        <button className="block lg:hidden" onClick={onToggleSidebar}>
+          {isClose ? (
+            <IoCloseOutline size="30px" />
+          ) : (
+            <IoReorderThreeOutline size="30px" />
+          )}
         </button>
         <img className="w-40 h-auto" src={Logo} alt="" />
         <div className="mx-auto"></div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getDaftarSelesaiById } from "../../../../libs/api";
+
 import InformasiMagang from "./Components/InformasiMagang";
 import InformasiInstansi from "./Components/InformasiInstansi";
 import InformasiSurat from "./Components/InformasiSurat";
@@ -66,40 +66,37 @@ const DetailHistory = () => {
           <h1>Loading ...</h1>
         </div>
       ) : (
-        <>
-          <ToastContainer />
-          <div className="flex flex-col justify-start gap-8 md:gap-4">
-            <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-              <div className="flex gap-2 items-center">
-                <SubTitle>Informasi Magang</SubTitle>
-              </div>
-              <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:justify-between md:flex-row items-center mt-4">
-                <TextInput
-                  id="tanggalPengajuan"
-                  label="Tanggal Pengajuan"
-                  disabled={true}
-                  value={instansi.status}
-                />
-
-                {magang && instansi.status === "Selesai" ? (
-                  <InformasiMagang magangData={magang} />
-                ) : (
-                  ""
-                )}
-              </div>
+        <div className="flex flex-col justify-start gap-8 md:gap-4">
+          <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
+            <div className="flex gap-2 items-center">
+              <SubTitle>Informasi Magang</SubTitle>
             </div>
-            <InformasiInstansi instansiData={instansi} />
-            <InformasiSurat suratData={surat} />
-            {pelamar.map((data, index) => (
-              <InformasiPelamar data={data} index={index} />
-            ))}
-            {alasan.alasan_tolak !== null && instansi.status === "Ditolak" ? (
-              <Catatan alasan={alasan} />
-            ) : (
-              ""
-            )}
+            <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:justify-between md:flex-row items-center mt-4">
+              <TextInput
+                id="tanggalPengajuan"
+                label="Tanggal Pengajuan"
+                disabled={true}
+                value={instansi.status}
+              />
+
+              {magang && instansi.status === "Selesai" ? (
+                <InformasiMagang magangData={magang} />
+              ) : (
+                ""
+              )}
+            </div>
           </div>
-        </>
+          <InformasiInstansi instansiData={instansi} />
+          <InformasiSurat suratData={surat} />
+          {pelamar.map((data, index) => (
+            <InformasiPelamar data={data} index={index} />
+          ))}
+          {alasan.alasan_tolak !== null && instansi.status === "Ditolak" ? (
+            <Catatan alasan={alasan} />
+          ) : (
+            ""
+          )}
+        </div>
       )}
     </>
   );

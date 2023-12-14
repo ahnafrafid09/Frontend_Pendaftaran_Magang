@@ -19,7 +19,6 @@ const Dashboard = () => {
       setToken(response.data.accessToken);
       const decoded = jwtDecode(response.data.accessToken);
       setExp(decoded.exp);
-      console.log(decoded);
     } catch (error) {
       if (error.response) {
         navigate("/login");
@@ -55,7 +54,6 @@ const Dashboard = () => {
           },
         }
       );
-      console.log(response);
     } catch (error) {
       console.log(error);
     }

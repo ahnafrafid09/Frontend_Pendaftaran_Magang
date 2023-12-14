@@ -69,15 +69,24 @@ export const GetProvider = (props) => {
     },
     loading: true,
   });
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    role: "",
-    username: "",
-    password: "",
-    confPassword: "",
+  const [akun, setAkun] = useState({
+    user: {
+      id: 0,
+      name: "",
+      email: "",
+      role: "",
+      username: "",
+    },
     loading: true,
   });
+  const [inputNewPassword, setInputNewPassword] = useState({
+    newPassword: "",
+    confNewPassword: "",
+  });
+
+  const [datas, setDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [dataPengajuan, setDataPengajuan] = useState({
     datas: [],
     pages: 0,
@@ -192,11 +201,10 @@ export const GetProvider = (props) => {
 
   const getDataById = async (instansiId) => {
     try {
-      const response = await axiosJwt.get(`/daftar/${instansiId}`, {
+      const response = await axiosJwt.get(`/user/daftar/${instansiId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const result = response.data;
-      console.log(result);
       const {
         id,
         nama_instansi,
@@ -248,15 +256,18 @@ export const GetProvider = (props) => {
         loading: false,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const getDataSelesaiById = async (instansiId) => {
     try {
-      const response = await axiosJwt.get(`/daftar-selesai/${instansiId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axiosJwt.get(
+        `/admin/daftar-selesai/${instansiId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const result = response.data;
       const {
         id,
@@ -316,7 +327,7 @@ export const GetProvider = (props) => {
   const getPengajuanMagang = async () => {
     try {
       const response = await axiosJwt.get(
-        `/daftar-menunggu?search_query=${dataPengajuan.keyword}&page=${dataPengajuan.page}&limit=${dataPengajuan.limit}`,
+        `/admin/daftar-menunggu?search_query=${dataPengajuan.keyword}&page=${dataPengajuan.page}&limit=${dataPengajuan.limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -341,7 +352,7 @@ export const GetProvider = (props) => {
   const getDataMagang = async () => {
     try {
       const response = await axiosJwt.get(
-        `/daftar-terima?search_query=${dataMagang.keyword}&page=${dataMagang.page}&limit=${dataMagang.limit}`,
+        `/admin/daftar-terima?search_query=${dataMagang.keyword}&page=${dataMagang.page}&limit=${dataMagang.limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -366,7 +377,7 @@ export const GetProvider = (props) => {
   const getDataHistory = async () => {
     try {
       const response = await axiosJwt.get(
-        `/daftar-selesai?search_query=${dataHistory.keyword}&page=${dataHistory.page}&limit=${dataHistory.limit}`,
+        `/admin/daftar-selesai?search_query=${dataHistory.keyword}&page=${dataHistory.page}&limit=${dataHistory.limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -391,7 +402,7 @@ export const GetProvider = (props) => {
   const getDataUser = async () => {
     try {
       const response = await axiosJwt.get(
-        `/users?search_query=${dataUser.keyword}&page=${dataUser.page}&limit=${dataUser.limit}`,
+        `/admin/users?search_query=${dataUser.keyword}&page=${dataUser.page}&limit=${dataUser.limit}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -399,7 +410,6 @@ export const GetProvider = (props) => {
         }
       );
       const data = response.data.result;
-      console.log(data);
       setDataUser((prev) => ({
         ...prev,
         datas: data,
@@ -416,22 +426,39 @@ export const GetProvider = (props) => {
 
   const getDataUserById = async (userId) => {
     try {
-      const response = await axiosJwt.get(`/user/${userId}`, {
+      const response = await axiosJwt.get(`/admin/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const result = response.data;
+      const { id, username, name, email, role } = result;
+      setAkun({
+        user: {
+          id,
+          name,
+          email,
+          username,
+          role,
+        },
+      });
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getDaftar = async () => {
+    try {
+      const response = await axiosJwt.get("/user/instansi/user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       console.log(response.data);
-      const result = response.data;
-      const { username, name, email, role } = result;
-      setUser({
-        name,
-        email,
-        username,
-        role,
-      });
-
-      return response;
+      setDatas(response.data);
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -463,6 +490,8 @@ export const GetProvider = (props) => {
   };
 
   let stateGet = {
+    datas,
+    setDatas,
     dataPengajuan,
     dataMagang,
     dataHistory,
@@ -474,8 +503,12 @@ export const GetProvider = (props) => {
     history,
     setHistory,
     alasan,
-    user,
-    setUser,
+    akun,
+    setAkun,
+    inputNewPassword,
+    setInputNewPassword,
+    loading,
+    setLoading,
   };
 
   let handleGet = {
@@ -489,6 +522,7 @@ export const GetProvider = (props) => {
     getDataById,
     getDataSelesaiById,
     resetFormData,
+    getDaftar,
   };
 
   return (

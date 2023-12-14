@@ -40,31 +40,7 @@ const DetailPengajuan = () => {
     tolakPelamar,
   } = handleUpdate;
   const { msgFile, alasan, setAlasan } = stateUpdate;
-  // const {
-  //   updatePelamar,
-  //   getDataById,
-  //   deletePelamar,
-  //   updateInstansi,
-  //   handleFileChange,
-  //   updateSurat,
-  //   tolakPelamar,
-  //   terimaPelamar,
-  // } = handle;
-  // const {
-  //   instansiData,
-  //   setInstansiData,
-  //   suratData,
-  //   setSuratData,
-  //   pelamarData,
-  //   setPelamarData,
-  //   alasan,
-  //   setAlasan,
-  //   setMsg,
-  //   msgFile,
-  //   magangData,
-  //   setMagangData,
-  //   msg,
-  // } = stateForPost;
+
   const [openModalTolak, setOpenModalTolak] = useState(false);
   const [openModalTerima, setOpenModalTerima] = useState(false);
   const { instansiId } = useParams();
@@ -107,7 +83,7 @@ const DetailPengajuan = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   const handlePelamarDelete = async (e, pelamarId) => {
@@ -142,7 +118,7 @@ const DetailPengajuan = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -150,7 +126,6 @@ const DetailPengajuan = () => {
   const handleUpdateInstansi = async (e) => {
     try {
       const response = await updateInstansi(e, instansiId);
-      console.log(response);
       if (response.status === 200) {
         toast.success(response.data.msg, {
           position: "top-right",
@@ -164,7 +139,7 @@ const DetailPengajuan = () => {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -186,7 +161,7 @@ const DetailPengajuan = () => {
       }
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -214,7 +189,7 @@ const DetailPengajuan = () => {
     try {
       await terimaPelamar(e, instansiId);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -284,14 +259,14 @@ const DetailPengajuan = () => {
                 handlePelamarDelete={handlePelamarDelete}
               />
             ))}
-            <div className="flex flex-col md:flex-row justify-center items-center gap-5">
-              <div className="w-full md:w-1/2">
+            <div className=" flex flex-col md:flex-row md:justify-between justify-center items-center gap-5">
+              <div className=" md:w-1/2 w-full">
                 <Button
                   bgColor="bg-green-800"
                   paddingY="py-4"
                   paddingX="px-36"
                   textColor="text-white"
-                  style="font-bold text-xl"
+                  style="font-bold text-xl w-full"
                   onClick={() => setOpenModalTerima(true)}
                 >
                   Terima
@@ -379,13 +354,13 @@ const DetailPengajuan = () => {
                   </Modal.Body>
                 </Modal>
               </div>
-              <div className="w-full md:w-1/2">
+              <div className="md:w-1/2 w-full">
                 <Button
                   bgColor="bg-error"
                   paddingY="py-4"
                   paddingX="px-36"
                   textColor="text-white"
-                  style="font-bold text-xl"
+                  style="font-bold text-xl w-full"
                   onClick={() => setOpenModalTolak(true)}
                 >
                   Tolak

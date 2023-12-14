@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getDaftarSelesai } from "../../../../libs/api";
 import Button from "../../../../Components/Button";
 import Pagination from "../../../../Components/Pagination";
 import DataTable from "../../../../Components/DataTable";

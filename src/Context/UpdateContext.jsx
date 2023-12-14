@@ -7,15 +7,17 @@ export const UpdateContext = createContext();
 
 export const UpdateProvider = (props) => {
   const { globalContext } = useContext(GlobalContext);
-  const { stateGet } = useContext(GetContext);
+  const { stateGet, handleGet } = useContext(GetContext);
 
   const { axiosJwt, token } = globalContext;
-  const { pengajuan, setPengajuan, magang, setMagang } = stateGet;
+  const { pengajuan, setPengajuan, magang, akun, inputNewPassword } = stateGet;
+  const { getDataUser } = handleGet;
   const { surat, pelamar, instansi } = pengajuan;
   const [alasan, setAlasan] = useState({
     alasan_tolak: "",
   });
   const [msgFile, setMsgFile] = useState("");
+  const [msg, setMsg] = useState("");
   const navigate = useNavigate();
 
   const updatePelamar = async (e, pelamarId) => {
@@ -23,7 +25,7 @@ export const UpdateProvider = (props) => {
     const selectedPelamar = pelamar.find((pelamar) => pelamar.id === pelamarId);
     try {
       const response = await axiosJwt.patch(
-        `/pelamar/${pelamarId}`,
+        `/admin/pelamar/${pelamarId}`,
         selectedPelamar,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -39,7 +41,7 @@ export const UpdateProvider = (props) => {
     e.preventDefault();
     try {
       const response = await axiosJwt.patch(
-        `/instansi/${instansiId}`,
+        `/admin/instansi/${instansiId}`,
         instansi,
         {
           headers: {
@@ -85,12 +87,16 @@ export const UpdateProvider = (props) => {
     formData.append("tglPengajuan", surat.tglPengajuan);
 
     try {
-      const response = await axiosJwt.patch(`/surat/${suratId}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosJwt.patch(
+        `/admin/surat/${suratId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response;
     } catch (error) {
       console.error(error);
@@ -101,7 +107,7 @@ export const UpdateProvider = (props) => {
     e.preventDefault();
     try {
       await axiosJwt.patch(
-        `/daftar/tolak/${instansiId}`,
+        `/admin/daftar/tolak/${instansiId}`,
         { alasan: alasan.alasan_tolak },
         {
           headers: {
@@ -120,7 +126,7 @@ export const UpdateProvider = (props) => {
 
     try {
       const response = await axiosJwt.patch(
-        `http://localhost:8000/api/instansi-magang/${instansiId}`,
+        `/admin/instansi-magang/${instansiId}`,
         {
           status: magang.instansi.status,
           tglMasuk: magang.magangData.tglMasuk,
@@ -132,6 +138,9 @@ export const UpdateProvider = (props) => {
           },
         }
       );
+      if (response === 200) {
+        getDataUser();
+      }
       return response;
     } catch (error) {
       console.error(error);
@@ -142,14 +151,30 @@ export const UpdateProvider = (props) => {
   const updateUser = async (e, userId) => {
     e.preventDefault();
     try {
-      const response = await axiosJwt.patch(`/users/${userId}`);
+      const response = await axiosJwt.patch(
+        `/admin/user/${userId}`,
+        {
+          name: akun.user.name,
+          email: akun.user.email,
+          username: akun.user.username,
+          role: akun.user.role,
+          password: inputNewPassword.newPassword,
+          confNewPassword: inputNewPassword.confNewPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      getDataUser();
       return response;
     } catch (error) {
-      console.error(error);
+      setMsg(error.response.data.msg);
     }
   };
 
-  let stateUpdate = { msgFile, alasan, setAlasan };
+  let stateUpdate = { msgFile, alasan, setAlasan, msg, setMsg };
 
   let handleUpdate = {
     updatePelamar,
@@ -158,6 +183,7 @@ export const UpdateProvider = (props) => {
     handleFileChange,
     tolakPelamar,
     updateStatusMagang,
+    updateUser,
   };
 
   return (

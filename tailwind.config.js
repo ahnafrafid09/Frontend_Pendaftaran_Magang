@@ -122,10 +122,8 @@ export default {
       "roboto": "Roboto, sans-serif",
       "lato": "Lato, sans-serif"
     },
-    screens: {
-      'lg': '1024px',
-    },
   },
   plugins: [require('flowbite/plugin')],
+  important: true,
 }
 

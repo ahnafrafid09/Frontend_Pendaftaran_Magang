@@ -217,7 +217,6 @@ export const GlobalProvider = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const result = response.data;
-      console.log(result);
       if (result.status === "Selesai") {
         setInstansiData({
           namaInstansi: result.nama_instansi,
@@ -504,7 +503,6 @@ export const GlobalProvider = (props) => {
       const response = await axiosJwt.get("/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response);
     } catch (error) {}
   };
 
