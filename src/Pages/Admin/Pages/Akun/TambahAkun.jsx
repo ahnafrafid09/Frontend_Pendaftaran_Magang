@@ -33,10 +33,8 @@ const TambahAkun = ({ close }) => {
 
   return (
     <>
-      <Modal show={true} size="sm" onClose={close} popup>
-        <Modal.Header className="bg-primary-blue px-10 font-roboto text-white ">
-          Tambah Akun
-        </Modal.Header>
+      <Modal show={true} size="sm" onClose={close} popup>        
+      <Modal.Header />
         <Modal.Body className="flex flex-col items-center justify-center">
           <p className=" text-center font-semibold text-error font-lato">
             {msg}
