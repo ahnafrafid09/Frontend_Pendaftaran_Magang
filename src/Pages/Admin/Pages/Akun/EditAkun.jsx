@@ -52,53 +52,56 @@ const EditAkun = ({ close, idUser }) => {
   return (
     <>
       <Modal show={true} size="sm" onClose={close} popup>
-        <Modal.Header className="bg-primary-blue px-10 font-roboto">
-          <h3 className="text-white mt-1">Tambah Akun</h3>
-        </Modal.Header>
+        <Modal.Header />
         <Modal.Body className="flex flex-col items-center justify-center">
+          <h1 className="text-center text-xl font-semibold font-roboto text-netral-black">
+            Edit Akun
+          </h1>
           <p className=" text-center font-semibold text-error font-lato">
             {msg}
           </p>
-          <TextInput
-            label="Nama"
-            id="name"
-            value={name}
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Username"
-            id="username"
-            value={username}
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Email"
-            id="email"
-            value={email}
-            onChange={handleChangeInput}
-          />
-          <DropdownInput
-            options={["Admin", "User"]}
-            title="Pilih Role"
-            label="Pilih Role:"
-            id="role"
-            value={role}
-            handleChange={handleChangeInput}
-          />
-          <TextInput
-            label="New Password"
-            type="password"
-            id="newPassword"
-            value={newPassword}
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Konfirmasi Password"
-            type="password"
-            id="confNewPassword"
-            value={confNewPassword}
-            onChange={handleChangeInput}
-          />
+          <div className="flex items-center justify-center gap-5 flex-col pt-3">
+            <TextInput
+              label="Nama"
+              id="name"
+              value={name}
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Username"
+              id="username"
+              value={username}
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Email"
+              id="email"
+              value={email}
+              onChange={handleChangeInput}
+            />
+            <DropdownInput
+              options={["Admin", "User"]}
+              title="Pilih Role"
+              label="Pilih Role:"
+              id="role"
+              value={role}
+              handleChange={handleChangeInput}
+            />
+            <TextInput
+              label="New Password"
+              type="password"
+              id="newPassword"
+              value={newPassword}
+              onChange={handleChangeInput} 
+            />
+            <TextInput
+              label="Konfirmasi Password"
+              type="password"
+              id="confNewPassword"
+              value={confNewPassword}
+              onChange={handleChangeInput}
+            />
+          </div>
         </Modal.Body>
         <Modal.Footer className="flex items-center justify-center w-full gap-10">
           <Button

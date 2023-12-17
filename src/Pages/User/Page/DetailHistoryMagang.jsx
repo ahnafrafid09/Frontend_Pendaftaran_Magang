@@ -1,21 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
-
-import InformasiMagang from "./Components/InformasiMagang";
-import InformasiInstansi from "./Components/InformasiInstansi";
-import InformasiSurat from "./Components/InformasiSurat";
-import InformasiPelamar from "./Components/InformasiPelamar";
-import Title from "../../../../Components/Title";
-import SubTitle from "../../../../Components/SubTitle";
-import TextInput from "../../../../Components/TextInput";
-import Button from "../../../../Components/Button";
+import React, { useContext, useEffect } from "react";
+import Title from "../../../Components/Title";
+import Button from "../../../Components/Button";
 import { AiOutlineArrowLeft } from "react-icons/ai";
-import { useParams } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-import Catatan from "./Components/Catatan";
-import { GetContext } from "../../../../Context/GetContext";
 import { Spinner } from "flowbite-react";
-
-const DetailHistory = () => {
+import SubTitle from "../../../Components/SubTitle";
+import TextInput from "../../../Components/TextInput";
+import InformasiInstansi from "../ComponentsDetail/InformasiInstansi";
+import InformasiMagang from "../ComponentsDetail/InformasiMagang";
+import InformasiPelamar from "../ComponentsDetail/InformasiPelamar";
+import InformasiSurat from "../ComponentsDetail/InformasiSurat";
+import Catatan from "../ComponentsDetail/Catatan";
+import { GetContext } from "../../../Context/GetContext";
+import { useParams } from "react-router-dom";
+const DetailHistoryMagang = () => {
   const { handleGet, stateGet } = useContext(GetContext);
   const { getDataSelesaiById, resetFormData } = handleGet;
   const { history, alasan } = stateGet;
@@ -26,14 +23,13 @@ const DetailHistory = () => {
   useEffect(() => {
     getDataSelesaiById(instansiId);
   }, []);
-
   return (
     <>
       <Title>Detail History Magang</Title>
       <div className="flex justify-start items-center mt-5">
         <Button
           textColor="text-white"
-          navigate="/admin/history"
+          navigate="/history"
           icon={<AiOutlineArrowLeft />}
           bgColor="bg-primary-blue"
           paddingY="py-2"
@@ -86,4 +82,4 @@ const DetailHistory = () => {
   );
 };
 
-export default DetailHistory;
+export default DetailHistoryMagang;

@@ -16,7 +16,6 @@ const TambahAkun = ({ close }) => {
       const response = await tambahUser(e);
       if (response.status === 201) {
         close();
-        window.location.reload();
       }
     } catch (error) {
       console.error(error);
@@ -33,60 +32,63 @@ const TambahAkun = ({ close }) => {
 
   return (
     <>
-      <Modal show={true} size="sm" onClose={close} popup>
-        <Modal.Header className="bg-primary-blue px-10 font-roboto text-white ">
-          Tambah Akun
-        </Modal.Header>
+      <Modal show={true} size="md" onClose={close} popup>
+        <Modal.Header />
         <Modal.Body className="flex flex-col items-center justify-center">
+          <h1 className="text-center text-xl font-semibold font-roboto text-netral-black">
+            Tambah Akun
+          </h1>
           <p className=" text-center font-semibold text-error font-lato">
             {msg}
           </p>
-          <TextInput
-            label="Nama"
-            id="name"
-            value={name}
-            placeHolder="Nama Lengkap"
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Username"
-            id="username"
-            value={username}
-            placeHolder="Username"
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Email"
-            id="email"
-            type="email"
-            value={email}
-            placeHolder="Alamat Email"
-            onChange={handleChangeInput}
-          />
-          <DropdownInput
-            options={["Admin", "User"]}
-            title="Pilih Role"
-            label="Pilih Role:"
-            id="role"
-            value={role}
-            handleChange={handleChangeInput}
-          />
-          <TextInput
-            label="Password"
-            type="password"
-            id="password"
-            value={password}
-            placeHolder="*********"
-            onChange={handleChangeInput}
-          />
-          <TextInput
-            label="Konfirmasi Password"
-            type="password"
-            id="confPassword"
-            value={confPassword}
-            placeHolder="**********"
-            onChange={handleChangeInput}
-          />
+          <div className="flex items-center justify-center gap-5 flex-col pt-3">
+            <TextInput
+              label="Nama Lengkap"
+              id="name"
+              value={name}
+              placeHolder="Nama Lengkap"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Username"
+              id="username"
+              value={username}
+              placeHolder="Username"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Email"
+              id="email"
+              type="email"
+              value={email}
+              placeHolder="Alamat Email"
+              onChange={handleChangeInput}
+            />
+            <DropdownInput
+              options={["Admin", "User"]}
+              title="Pilih Role"
+              label="Pilih Role:"
+              id="role"
+              value={role}
+              handleChange={handleChangeInput}
+            />
+            <TextInput
+              label="Password"
+              type="password"
+              id="password"
+              value={password}
+              placeHolder="*********"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Konfirmasi Password"
+              type="password"
+              id="confPassword"
+              value={confPassword}
+              placeHolder="**********"
+              onChange={handleChangeInput}
+            />
+          </div>
         </Modal.Body>
         <Modal.Footer className="flex items-center justify-center w-full gap-10">
           <Button

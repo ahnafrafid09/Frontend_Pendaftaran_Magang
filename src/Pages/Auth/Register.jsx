@@ -63,7 +63,7 @@ const Register = () => {
                   className="mt-5 border-b-2 border-x-0 border-t-0 bg-transparent border-gray py-2 w-full"
                 />
                 <input
-                  type="text"
+                  type="email"
                   placeholder="Masukan Email"
                   name="email"
                   value={register.email}

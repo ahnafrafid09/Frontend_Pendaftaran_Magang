@@ -44,7 +44,7 @@ const Magang = () => {
       Cell: ({ value }) => (
         <div className="w-full flex justify-center items-center">
           <Button
-            navigate={`/admin/magang/detail/${value}`}
+            navigate={`/magang/detail/${value}`}
             icon={<AiOutlineSearch size="24px" />}
             bgColor="bg-primary-blue"
             paddingY="py-2"
@@ -67,7 +67,6 @@ const Magang = () => {
   const filteredData = datas.filter(
     (item) =>
       item.status.toLowerCase() === "aktif" ||
-      item.status.toLowerCase() === "selesai" ||
       item.status.toLowerCase() === "diterima"
   );
 

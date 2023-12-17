@@ -13,6 +13,7 @@ export const PostProvider = (props) => {
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
   const [msgFile, setMsgFile] = useState("");
+  const [msgForm, setMsgForm] = useState("");
   const [inputPengajuan, setInputPengajuan] = useState({
     instansi: {
       namaInstansi: "",
@@ -115,7 +116,7 @@ export const PostProvider = (props) => {
     formData.append("pelamar", JSON.stringify(inputPengajuan.pelamar));
 
     try {
-      await axiosJwt.post("/user/daftar", formData, {
+      const response = await axiosJwt.post("/user/daftar", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -126,10 +127,12 @@ export const PostProvider = (props) => {
       } else if (role === "user") {
         navigate("/pengajuan");
       }
+      return response;
     } catch (error) {
       if (error.response) {
-        setMsg(error.response.data.msg);
+        setMsgForm(error.response.data.msg);
       }
+      return error.response;
     }
   };
 
@@ -171,6 +174,8 @@ export const PostProvider = (props) => {
     setInputUser,
     msg,
     setMsg,
+    msgForm,
+    setMsgForm,
     inputMagang,
     setInputMagang,
     inputPengajuan,

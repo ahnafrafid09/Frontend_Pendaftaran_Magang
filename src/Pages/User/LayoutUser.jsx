@@ -10,6 +10,11 @@ import { DeleteProvider } from "../../Context/DeleteContext";
 import Pengajuan from "./Page/Pengajuan";
 import Daftar from "./Page/Daftar";
 import Magang from "./Page/Magang";
+import DetailPengajuanMagang from "./Page/DetailPengajuanMagang";
+import DetailDataMagang from "./Page/DetailDataMagang";
+import History from "./Page/History";
+import DetailHistoryMagang from "./Page/DetailHistoryMagang";
+import Profile from "./Page/Profile";
 
 const LayoutAdmin = () => {
   const [isSidebarClose, setSidebarClose] = useState(false);
@@ -41,6 +46,20 @@ const LayoutAdmin = () => {
                       <Route axact path="/pengajuan" element={<Pengajuan />} />
                       <Route path="/daftar" element={<Daftar />} />
                       <Route path="/magang" element={<Magang />} />
+                      <Route path="/history" element={<History />} />
+                      <Route path="/profil" element={<Profile />} />
+                      <Route
+                        path="/magang/detail/:instansiId"
+                        element={<DetailDataMagang />}
+                      />
+                      <Route
+                        path="/pengajuan/detail/:instansiId"
+                        element={<DetailPengajuanMagang />}
+                      />
+                      <Route
+                        path="/history/detail/:instansiId"
+                        element={<DetailHistoryMagang />}
+                      />
                     </Routes>
                   </PostProvider>
                 </DeleteProvider>

@@ -19,6 +19,7 @@ export const GetProvider = (props) => {
       noSurat: "",
       url: "",
       tglPengajuan: "",
+      file: "",
     },
     pelamar: [],
     loading: true,
@@ -86,6 +87,7 @@ export const GetProvider = (props) => {
 
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
 
   const [dataPengajuan, setDataPengajuan] = useState({
     datas: [],
@@ -216,6 +218,9 @@ export const GetProvider = (props) => {
         magang,
       } = result;
 
+      setData(result);
+      setLoading(false);
+
       setPengajuan({
         instansi: {
           namaInstansi: nama_instansi,
@@ -228,6 +233,7 @@ export const GetProvider = (props) => {
           url: surat.url,
           noSurat: surat.no_surat,
           tglPengajuan: surat.tanggal_pengajuan,
+          file: surat.fileName,
         },
         pelamar: pelamars,
         loading: false,
@@ -263,7 +269,7 @@ export const GetProvider = (props) => {
   const getDataSelesaiById = async (instansiId) => {
     try {
       const response = await axiosJwt.get(
-        `/admin/daftar-selesai/${instansiId}`,
+        `/user/daftar-selesai/${instansiId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -294,12 +300,14 @@ export const GetProvider = (props) => {
             url: surat.url,
             noSurat: surat.no_surat,
             tglPengajuan: surat.tanggal_pengajuan,
+            file: surat.fileName,
           },
           pelamar: pelamars,
           magang: {
             tglMasuk: magang.tanggal_masuk,
             tglSelesai: magang.tanggal_selesai,
           },
+          loading: false,
         });
       } else if (alasan.alasan_tolak && status === "Ditolak") {
         setHistory({
@@ -311,13 +319,16 @@ export const GetProvider = (props) => {
           },
           pelamar: pelamars,
           surat: {
-            file: surat.file,
+            file: surat.fileName,
             url: surat.url,
             noSurat: surat.no_surat,
             tglPengajuan: surat.tanggal_pengajuan,
           },
+          loading: false,
         });
         setAlasan({ alasan_tolak: alasan.alasan_tolak });
+        setData(result);
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -492,6 +503,8 @@ export const GetProvider = (props) => {
   let stateGet = {
     datas,
     setDatas,
+    data,
+    setData,
     dataPengajuan,
     dataMagang,
     dataHistory,
