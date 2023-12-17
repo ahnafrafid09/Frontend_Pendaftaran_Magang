@@ -51,6 +51,11 @@ const Sidebar = ({ isClose }) => {
         link: "/magang",
       },
       {
+        listName: "History Magang",
+        icon: AiOutlineHistory,
+        link: "/history",
+      },
+      {
         listName: "Manajemen Akun",
         icon: TbSettings2,
         link: "/profil",

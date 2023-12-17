@@ -5,13 +5,14 @@ import { GetContext } from "../../../../Context/GetContext";
 import DataTable from "../../../../Components/DataTable";
 import { AiOutlineSearch, AiOutlinePlus } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { Spinner } from "flowbite-react";
+import { Modal, Spinner } from "flowbite-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Pagination from "../../../../Components/Pagination";
 import TambahAkun from "./TambahAkun";
 import EditAkun from "./EditAkun";
 import { DeleteContext } from "../../../../Context/DeleteContext";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const Akun = () => {
   const { handleGet, stateGet } = useContext(GetContext);
@@ -24,6 +25,7 @@ const Akun = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [openModalTambah, setOpenModalTambah] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [openModalDelete, setOpenModalDelete] = useState(false);
 
   const handleEditClick = (userId) => {
     setOpenModalEdit(true);
@@ -49,6 +51,8 @@ const Akun = () => {
           progress: undefined,
           theme: "colored",
         });
+        setOpenModalDelete(false);
+        setSelectedUserId(null);
       }
     } catch (error) {
       console.error(error);
@@ -82,7 +86,11 @@ const Akun = () => {
             paddingX="px-4"
             style="w-20"
             textColor="text-netral-white"
-            onClick={(e) => handleDeleteAkun(e, value)}
+            onClick={() => {
+              console.log(value);
+              setSelectedUserId(value);
+              setOpenModalDelete(true);
+            }}
           >
             Hapus
           </Button>
@@ -156,6 +164,48 @@ const Akun = () => {
                 </div>
               </>
             )}
+            <Modal
+              show={openModalDelete}
+              size="md"
+              onClose={() => {
+                setOpenModalDelete(false);
+                setSelectedUserId(null); // Reset selectedUserId saat modal ditutup
+              }}
+              popup
+            >
+              <Modal.Header />
+              <Modal.Body>
+                <div className="text-center">
+                  <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-warning" />
+                  <h3 className="mb-5 text-lg font-roboto text-netral-black ">
+                    Anda Yakin Ingin Menghapus User Ini?
+                  </h3>
+                  <div className="flex justify-center gap-4">
+                    <Button
+                      bgColor="bg-blue-800"
+                      textColor="text-white"
+                      paddingX="px-2.5"
+                      paddingY="py-1.5"
+                      onClick={(e) => handleDeleteAkun(e, selectedUserId)}
+                    >
+                      Konfirmasi
+                    </Button>
+                    <Button
+                      bgColor="bg-error"
+                      textColor="text-white"
+                      paddingX="px-2.5"
+                      paddingY="py-1.5"
+                      onClick={() => {
+                        setOpenModalDelete(false);
+                        setSelectedUserId(null); // Reset selectedUserId saat modal ditutup
+                      }}
+                    >
+                      Batalkan
+                    </Button>
+                  </div>
+                </div>
+              </Modal.Body>
+            </Modal>
           </div>
         </div>
       </div>

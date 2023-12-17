@@ -19,7 +19,11 @@ export const UpdateProvider = (props) => {
   const [msgFile, setMsgFile] = useState("");
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
-
+  const [changePassword, setChangePassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confNewPassword: "",
+  });
   const updatePelamar = async (e, pelamarId) => {
     e.preventDefault();
     const selectedPelamar = pelamar.find((pelamar) => pelamar.id === pelamarId);
@@ -174,7 +178,31 @@ export const UpdateProvider = (props) => {
     }
   };
 
-  let stateUpdate = { msgFile, alasan, setAlasan, msg, setMsg };
+  const updatePassword = async (e, userId) => {
+    e.preventDefault();
+    try {
+      const response = await axiosJwt.patch(
+        `/user/change-password/${userId}`,
+        changePassword
+      );
+      return response;
+    } catch (error) {
+      console.error(error);
+      if (error) {
+        setMsg(error.response.data.msg);
+      }
+    }
+  };
+
+  let stateUpdate = {
+    msgFile,
+    alasan,
+    setAlasan,
+    msg,
+    setMsg,
+    changePassword,
+    setChangePassword,
+  };
 
   let handleUpdate = {
     updatePelamar,
@@ -184,6 +212,7 @@ export const UpdateProvider = (props) => {
     tolakPelamar,
     updateStatusMagang,
     updateUser,
+    updatePassword,
   };
 
   return (

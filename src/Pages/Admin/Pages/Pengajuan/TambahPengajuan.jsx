@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import InformasiInstansi from "./Components/InformasiInstansi";
 import InformasiSurat from "./Components/InformasiSurat";
 import Title from "../../../../Components/Title";
@@ -6,9 +6,12 @@ import SubTitle from "../../../../Components/SubTitle";
 import TextInput from "../../../../Components/TextInput";
 import Button from "../../../../Components/Button";
 import { AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
+import { HiOutlineInformationCircle } from "react-icons/hi";
 import { PostContext } from "../../../../Context/PostContext";
+import { Modal } from "flowbite-react";
 
 const TambahPengajuan = () => {
+  const [openModal, setOpenModal] = useState(false);
   const { handlePost, statePost } = useContext(PostContext);
 
   const {
@@ -18,6 +21,9 @@ const TambahPengajuan = () => {
     setNewPelamar,
     msgFile,
     msg,
+    setMsg,
+    setMsgForm,
+    setMsgFile,
     msgForm,
   } = statePost;
   const { instansi, pelamar, surat } = inputPengajuan;
@@ -29,6 +35,17 @@ const TambahPengajuan = () => {
       ...prevInputPengajuan,
       instansi: data,
     }));
+  };
+
+  const reset = () => {
+    setMsg("");
+    setMsgForm("");
+    setMsgFile("");
+  };
+
+  const closeModal = () => {
+    setMsgForm("");
+    setOpenModal(false);
   };
 
   const setSuratData = (data) => {
@@ -50,6 +67,7 @@ const TambahPengajuan = () => {
           paddingY="py-2"
           paddingX="px-2.5"
           style="text-sm md:text-base lg:text-lg"
+          onClick={reset}
         >
           Kembali
         </Button>
@@ -67,70 +85,67 @@ const TambahPengajuan = () => {
         />
         <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
           <SubTitle>Informasi Pelamar</SubTitle>
-          <div className="mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 justify-items-center md:justify-items-stretch">
-            <div className="lg:col-span-3 lg:flex lg:justify-between gap-4 lg:gap-0">
-              <div className="">
-                <TextInput
-                  label="Nama Lengkap"
-                  id="namaLengkap"
-                  placeHolder="Masukan Nama Lengkap"
-                  value={newPelamar.namaLengkap}
-                  onChange={(e) =>
-                    setNewPelamar({
-                      ...newPelamar,
-                      namaLengkap: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="">
-                <TextInput
-                  label="Alamat"
-                  id="alamat"
-                  placeHolder="Masukan Alamat"
-                  value={newPelamar.alamat}
-                  onChange={(e) =>
-                    setNewPelamar({
-                      ...newPelamar,
-                      alamat: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="">
-                <TextInput
-                  label="No Telepon"
-                  id="noTelepon"
-                  placeHolder="Masukan No Telepon"
-                  value={newPelamar.noTelp}
-                  onChange={(e) =>
-                    setNewPelamar({
-                      ...newPelamar,
-                      noTelp: e.target.value,
-                    })
-                  }
-                />
-              </div>
-            </div>
-            <div className="">
+          <div className="mx-auto lg:mx-0 md:w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 justify-items-center md:justify-items-stretch">
+            <div className="lg:col-span-3 lg:flex lg:justify-between lg:gap-0">
               <TextInput
-                label="No Induk"
-                id="noInduk"
-                placeHolder="Masukan No Induk"
-                value={newPelamar.noInduk}
+                label="Nama Lengkap"
+                id="namaLengkap"
+                style="mb-5"
+                placeHolder="Masukan Nama Lengkap"
+                value={newPelamar.namaLengkap}
                 onChange={(e) =>
                   setNewPelamar({
                     ...newPelamar,
-                    noInduk: e.target.value,
+                    namaLengkap: e.target.value,
+                  })
+                }
+              />
+              <TextInput
+                label="Alamat"
+                id="alamat"
+                placeHolder="Masukan Alamat"
+                style="mb-5"
+                value={newPelamar.alamat}
+                onChange={(e) =>
+                  setNewPelamar({
+                    ...newPelamar,
+                    alamat: e.target.value,
+                  })
+                }
+              />
+              <TextInput
+                label="No Telepon"
+                id="noTelepon"
+                placeHolder="Masukan No Telepon"
+                style="mb-5"
+                value={newPelamar.noTelp}
+                onChange={(e) =>
+                  setNewPelamar({
+                    ...newPelamar,
+                    noTelp: e.target.value,
                   })
                 }
               />
             </div>
+            <TextInput
+              label="No Induk"
+              id="noInduk"
+              placeHolder="Masukan No Induk"
+              value={newPelamar.noInduk}
+              style="mb-5"
+              onChange={(e) =>
+                setNewPelamar({
+                  ...newPelamar,
+                  noInduk: e.target.value,
+                })
+              }
+            />
             <div className=" lg:justify-self-center">
               <TextInput
                 label="Alamat Email"
                 id="alamatEmail"
                 placeHolder="Masukan Alamat Email"
+                style="mb-5"
                 value={newPelamar.email}
                 onChange={(e) =>
                   setNewPelamar({ ...newPelamar, email: e.target.value })
@@ -188,19 +203,51 @@ const TambahPengajuan = () => {
         ""
       )}
       <div className="mt-5">
-        <p className="text-center text-error mt-5 mb-5 font-bold font-roboto">
-          {msgForm}
-        </p>
         <Button
           bgColor="bg-green-700"
           paddingY="py-3"
           paddingX="px-2"
           style="w-full"
           textColor="text-white text-2xl font-medium"
-          onClick={daftar}
+          onClick={() => setOpenModal(true)}
         >
           Simpan Data
         </Button>
+        <Modal show={openModal} size="md" onClose={closeModal} popup>
+          <Modal.Header />
+          <Modal.Body>
+            <div className="flex justify-center">
+              <HiOutlineInformationCircle size="50px" />
+            </div>
+            <p className="text-center text-error mt-5 mb-5 font-bold font-roboto">
+              {msgForm}
+            </p>
+            <p className="mt-3 text-justify font-lato">
+              Apakah Anda yakin ingin menyimpan data pengajuan magang ini?
+              Pastikan bahwa semua informasi telah diperiksa dengan cermat
+            </p>
+            <div className="flex justify-end mt-5 gap-5">
+              <Button
+                bgColor="bg-blue-800"
+                paddingY="py-1"
+                paddingX="px-3"
+                textColor="text-white text-lg font-medium font-lato"
+                onClick={daftar}
+              >
+                Simpan
+              </Button>
+              <Button
+                bgColor="bg-blue-500"
+                paddingY="py-1"
+                paddingX="px-4"
+                textColor="text-white text-lg font-medium font-lato"
+                onClick={closeModal}
+              >
+                Batal
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </>
   );

@@ -13,13 +13,17 @@ const Login = () => {
   const Auth = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8000/api/login", {
-        username: username,
-        password: password,
-      });
-      response.data.role === "admin"
-        ? navigate("/admin")
-        : navigate("/pengajuan");
+      if (username || password !== "") {
+        const response = await axios.post("http://localhost:8000/api/login", {
+          username: username,
+          password: password,
+        });
+        response.data.role === "admin"
+          ? navigate("/admin")
+          : navigate("/pengajuan");
+      } else {
+        setMsg("Tolong Isi Form Username dan Password");
+      }
     } catch (error) {
       if (error.response) {
         setMsg(error.response.data.msg);
