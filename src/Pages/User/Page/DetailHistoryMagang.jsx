@@ -51,7 +51,7 @@ const DetailHistoryMagang = () => {
             <div className="flex gap-2 items-center">
               <SubTitle>Informasi Magang</SubTitle>
             </div>
-            <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:justify-between md:flex-row items-center mt-4">
+            <div className="flex flex-wrap flex-col gap-3 md:gap-0 md:flex-row md:justify-between items-center mt-4">
               <TextInput
                 id="status"
                 label="Status"

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../../Components/Navbar";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { GlobalProvider } from "../../Context/GlobalContext";
 import { GetProvider } from "../../Context/GetContext";
 import Sidebar from "../../Components/Sidebar";
@@ -16,6 +16,7 @@ import Akun from "./Pages/Akun/Akun";
 import { PostProvider } from "../../Context/PostContext";
 import { UpdateProvider } from "../../Context/UpdateContext";
 import { DeleteProvider } from "../../Context/DeleteContext";
+import { useAuth } from "../../Context/AuthContext";
 
 const LayoutAdmin = () => {
   const [isSidebarClose, setSidebarClose] = useState(false);

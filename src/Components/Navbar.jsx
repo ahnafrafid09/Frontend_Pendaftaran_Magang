@@ -3,17 +3,17 @@ import Logo from "../assets/Logo Diskominfo Jabar.png";
 import { IoReorderThreeOutline, IoCloseOutline } from "react-icons/io5";
 import { GlobalContext } from "../Context/GlobalContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext";
 
 const Navbar = ({ onToggleSidebar, isClose }) => {
-  const navigate = useNavigate();
   const { globalContext } = useContext(GlobalContext);
   const { name } = globalContext;
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
     try {
       await axios.delete("http://localhost:8000/api/logout");
-      navigate("/login");
+      logout();
     } catch (error) {
       console.error(error);
     }

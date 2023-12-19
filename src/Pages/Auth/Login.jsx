@@ -1,34 +1,17 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 import Logo from "../../assets/Logo Diskominfo Jabar.png";
 import Shape from "../../assets/Shape.png";
 
 const Login = () => {
+  const { login, msg } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [msg, setMsg] = useState("");
-  const navigate = useNavigate();
 
-  const Auth = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      if (username || password !== "") {
-        const response = await axios.post("http://localhost:8000/api/login", {
-          username: username,
-          password: password,
-        });
-        response.data.role === "admin"
-          ? navigate("/admin")
-          : navigate("/pengajuan");
-      } else {
-        setMsg("Tolong Isi Form Username dan Password");
-      }
-    } catch (error) {
-      if (error.response) {
-        setMsg(error.response.data.msg);
-      }
-    }
+    login(username, password);
   };
   {
     /* md:pt-16 md:pl-36 */
@@ -47,7 +30,7 @@ const Login = () => {
             <p className="font-lato text-center text-lg md:text-left md:text-xl font-normal">
               Masukan Informasi Login Anda Untuk Mengkases
             </p>
-            <form onSubmit={Auth}>
+            <form onSubmit={handleLogin}>
               <div className="mt-5 w-full">
                 <p className="font-bold text-center text-xl text-error ">
                   {msg}

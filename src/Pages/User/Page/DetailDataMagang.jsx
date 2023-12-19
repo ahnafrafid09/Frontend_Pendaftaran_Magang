@@ -39,26 +39,21 @@ const DetailDataMagang = () => {
         </Button>
       </div>
       <div className="flex flex-col justify-start gap-8 md:gap-4">
-        <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
-          {loading ? (
-            <div className="text-center">
-              <Spinner aria-label="Center-aligned spinner" size="lg" />
-              <h1>Loading ...</h1>
-            </div>
-          ) : (
-            <>
-              <InformasiMagang
-                magangData={magangData}
-                instansiData={instansi}
-              />
-              <InformasiInstansi instansiData={instansi} />
-              <InformasiSurat suratData={surat} />
-              {pelamar.map((data, index) => (
-                <InformasiPelamar data={data} key={index} />
-              ))}
-            </>
-          )}
-        </div>
+        {loading ? (
+          <div className="text-center">
+            <Spinner aria-label="Center-aligned spinner" size="lg" />
+            <h1>Loading ...</h1>
+          </div>
+        ) : (
+          <div className="flex flex-col justify-start gap-8 md:gap-4">
+            <InformasiMagang magangData={magangData} instansiData={instansi} />
+            <InformasiInstansi instansiData={instansi} />
+            <InformasiSurat suratData={surat} />
+            {pelamar.map((data, index) => (
+              <InformasiPelamar data={data} key={index} />
+            ))}
+          </div>
+        )}
       </div>
     </>
   );
