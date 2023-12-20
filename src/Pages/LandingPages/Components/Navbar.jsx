@@ -23,9 +23,9 @@ const Navbar = () => {
           }
         >
           <ul
-            className={
+            className={` text-blue-700 ${
               isOpen ? "flex flex-col items-start gap-5 px-5" : "flex gap-9"
-            }
+            }`}
           >
             <li>
               <Link
@@ -34,7 +34,8 @@ const Navbar = () => {
                 spy={true}
                 offset={-100}
                 smooth={true}
-                className="cursor-pointer"
+                className="cursor-pointer transition duration-300 hover:text-blue-900 hover:underline active:underline active:text-blue-900"
+                activeClass="active"
               >
                 Beranda
               </Link>
@@ -46,7 +47,8 @@ const Navbar = () => {
                 delay={300}
                 spy={true}
                 offset={-70}
-                className="cursor-pointer"
+                className="cursor-pointer transition duration-300 hover:text-blue-900 hover:underline active:underline active:text-blue-900"
+                activeClass="active"
               >
                 Tentang Kami
               </Link>
@@ -58,7 +60,8 @@ const Navbar = () => {
                 delay={300}
                 spy={true}
                 offset={-70}
-                className="cursor-pointer"
+                className="cursor-pointer transition duration-300 hover:text-blue-900 hover:underline active:underline active:text-blue-900"
+                activeClass="active"
               >
                 FAQ
               </Link>
@@ -70,14 +73,15 @@ const Navbar = () => {
                 delay={300}
                 spy={true}
                 offset={-70}
-                className="cursor-pointer"
+                className="cursor-pointer transition duration-300 hover:text-blue-900 hover:underline active:underline active:text-blue-900"
+                activeClass="active"
               >
                 Kontak
               </Link>
             </li>
           </ul>
         </div>
-        <div className="flex gap-4 md:gap-7 items-center">
+        <div className="flex gap-4 md:gap-7 items-center text-blue-700">
           <Linked to="/register">
             <button>Daftar</button>
           </Linked>
