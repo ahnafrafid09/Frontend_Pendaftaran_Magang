@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../../assets/Logo Diskominfo Jabar.png";
 import Shape from "../../assets/Shape.png";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Register = () => {
   const [register, setRegister] = useState({
@@ -26,7 +28,10 @@ const Register = () => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:8000/api/register", register);
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login"); 
+      }, 3000); 
+      toast.success('Registration successful'); 
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -34,6 +39,8 @@ const Register = () => {
       }
     }
   };
+
+
   return (
     <>
       <div className="w-screen h-screen bg-gradient-to-b from-[#FFF] from--9.28% to-[#90CAF9] to-168.46%">
@@ -114,6 +121,7 @@ const Register = () => {
           />
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };
