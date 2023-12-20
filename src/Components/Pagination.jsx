@@ -5,7 +5,7 @@ const Pagination = ({ rows, page, pages, changePage }) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center">
       <p className="mb-4 sm:mb-0">
-        Showing {rows} to {rows ? page + 1 : 0} of {pages} entries
+        Total Rows: {rows} Page: {rows ? page + 1 : 0} of {pages}
       </p>
       <ReactPaginate
         previousLabel="Previous"

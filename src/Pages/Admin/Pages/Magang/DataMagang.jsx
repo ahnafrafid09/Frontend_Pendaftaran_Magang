@@ -102,9 +102,7 @@ const Magang = () => {
                   rows={rows}
                   page={page}
                   pages={pages}
-                  changePage={(selected) =>
-                    changePage({ selected }, "dataMagang")
-                  }
+                  changePage={(selected) => changePage(selected, "dataMagang")}
                 />
               </div>
             </>

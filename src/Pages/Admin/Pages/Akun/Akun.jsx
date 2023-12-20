@@ -157,9 +157,7 @@ const Akun = () => {
                     rows={rows}
                     page={page}
                     pages={pages}
-                    changePage={(selected) =>
-                      changePage({ selected }, "dataUser")
-                    }
+                    changePage={(selected) => changePage(selected, "dataUser")}
                   />
                 </div>
               </>

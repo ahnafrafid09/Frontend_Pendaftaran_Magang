@@ -1,10 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Element } from "react-scroll";
 import Button from "../../../Components/Button";
 import image from "../../../assets/home-image.png";
+import Cookies from "js-cookie";
 
 const Beranda = () => {
   const currentYear = new Date().getFullYear();
+
+  const isLoginFromCookie = Cookies.get("isLogin") === "true";
+  const roleFromCookie = Cookies.get("role");
+
   return (
     <Element name="beranda">
       <div className="w-full h-screen bg-gradient-to-br from-blue-800 to-blue-300">
@@ -24,7 +29,13 @@ const Beranda = () => {
               <Button
                 bgColor="bg-white"
                 style="px-3 py-3 md:px-4 md:py-4 font-lato font-bold text-xl leading-relaxed w-full md:w-auto text-blue-800"
-                navigate="/register"
+                navigate={
+                  isLoginFromCookie && roleFromCookie
+                    ? roleFromCookie === "admin"
+                      ? "/admin/pengajuan/daftar"
+                      : "/daftar"
+                    : "/register"
+                }
               >
                 Daftar Sekarang
               </Button>

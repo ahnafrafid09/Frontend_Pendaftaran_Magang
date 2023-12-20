@@ -114,7 +114,7 @@ const Pengajuan = () => {
                     page={page}
                     pages={pages}
                     changePage={(selected) =>
-                      changePage({ selected }, "dataPengajuan")
+                      changePage(selected, "dataPengajuan")
                     }
                   />
                 </div>

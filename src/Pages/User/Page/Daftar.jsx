@@ -67,6 +67,7 @@ const Daftar = () => {
           paddingY="py-2"
           paddingX="px-2.5"
           style="text-sm md:text-base lg:text-lg"
+          onClick={reset}
         >
           Kembali
         </Button>

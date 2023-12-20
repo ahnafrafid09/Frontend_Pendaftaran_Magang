@@ -3,6 +3,7 @@ import Logo from "../../../assets/Logo Diskominfo Jabar.png";
 import { Link } from "react-scroll";
 import { TfiAlignJustify, TfiClose } from "react-icons/tfi";
 import { Link as Linked } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,9 @@ const Navbar = () => {
   const openNavigation = () => {
     setIsOpen(!isOpen);
   };
+
+  const isLoginFromCookie = Cookies.get("isLogin") === "true";
+  const roleFromCookie = Cookies.get("role");
 
   return (
     <nav className="bg-blue-100 p-4 text-blue-900 font-semibold font-roboto sticky top-0 left-0">
@@ -82,14 +86,22 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="flex gap-4 md:gap-7 items-center text-blue-700">
-          <Linked to="/register">
-            <button>Daftar</button>
-          </Linked>
-          <Linked to="/login">
-            <button className="bg-blue-900 text-white px-3 py-1 rounded-lg">
-              Login
-            </button>
-          </Linked>
+          {isLoginFromCookie && roleFromCookie ? (
+            <Linked to={roleFromCookie === "admin" ? "/admin" : "/pengajuan"}>
+              <button>Dashboard</button>
+            </Linked>
+          ) : (
+            <>
+              <Linked to="/register">
+                <button>Daftar</button>
+              </Linked>
+              <Linked to="/login">
+                <button className="bg-blue-900 text-white px-3 py-1 rounded-lg">
+                  Login
+                </button>
+              </Linked>
+            </>
+          )}
           <div className="md:hidden cursor-pointer" onClick={openNavigation}>
             {isOpen ? <TfiClose /> : <TfiAlignJustify />}
           </div>

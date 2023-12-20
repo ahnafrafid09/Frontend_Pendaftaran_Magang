@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logo from "../../assets/Logo Diskominfo Jabar.png";
 import Shape from "../../assets/Shape.png";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const [register, setRegister] = useState({
@@ -27,11 +27,25 @@ const Register = () => {
   const Register = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/register", register);
+      const response = await axios.post(
+        "http://localhost:8000/api/register",
+        register
+      );
       setTimeout(() => {
-        navigate("/login"); 
-      }, 3000); 
-      toast.success('Registration successful'); 
+        navigate("/login");
+      }, 3000);
+      if (response.status === 201) {
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
     } catch (error) {
       console.error(error);
       if (error.response) {
@@ -39,7 +53,6 @@ const Register = () => {
       }
     }
   };
-
 
   return (
     <>
@@ -121,7 +134,7 @@ const Register = () => {
           />
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 };

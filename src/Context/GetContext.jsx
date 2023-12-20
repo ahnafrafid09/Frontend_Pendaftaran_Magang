@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import { GlobalContext } from "./GlobalContext";
+import axios from "axios";
 export const GetContext = createContext();
 
 export const GetProvider = (props) => {
@@ -88,6 +89,7 @@ export const GetProvider = (props) => {
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
+  const [jumlah, setJumlah] = useState({});
 
   const [dataPengajuan, setDataPengajuan] = useState({
     datas: [],
@@ -346,6 +348,7 @@ export const GetProvider = (props) => {
         }
       );
       const data = response.data.result;
+      console.log(response.data);
       setDataPengajuan((prev) => ({
         ...prev,
         datas: data,
@@ -475,6 +478,16 @@ export const GetProvider = (props) => {
     }
   };
 
+  const getJumlahDaftar = async () => {
+    try {
+      const response = await axiosJwt.get("/admin/jumlah-daftar");
+      const data = response.data;
+      setJumlah(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const changePage = ({ selected }, dataType) => {
     if (dataType === "dataPengajuan") {
       setDataPengajuan((prev) => ({ ...prev, page: selected }));
@@ -522,6 +535,8 @@ export const GetProvider = (props) => {
     setInputNewPassword,
     loading,
     setLoading,
+    jumlah,
+    setJumlah,
   };
 
   let handleGet = {
@@ -536,6 +551,7 @@ export const GetProvider = (props) => {
     getDataSelesaiById,
     resetFormData,
     getDaftar,
+    getJumlahDaftar,
   };
 
   return (

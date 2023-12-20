@@ -4,7 +4,6 @@ import Pagination from "../../../../Components/Pagination";
 import DataTable from "../../../../Components/DataTable";
 import Title from "../../../../Components/Title";
 import { AiOutlineSearch } from "react-icons/ai";
-import { GlobalContext } from "../../../../Context/GlobalContext";
 import { GetContext } from "../../../../Context/GetContext";
 import { Spinner } from "flowbite-react";
 
@@ -96,9 +95,7 @@ const HistoryMagang = () => {
                   rows={rows}
                   pages={pages}
                   page={page}
-                  changePage={(selected) =>
-                    changePage({ selected }, "dataHistory")
-                  }
+                  changePage={(selected) => changePage(selected, "dataHistory")}
                 />
               </div>
             </>

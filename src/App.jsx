@@ -5,24 +5,40 @@ import { Route, BrowserRouter, Routes, Navigate } from "react-router-dom";
 import LayoutAdmin from "./Pages/Admin/LayoutAdmin";
 import LayoutUser from "./Pages/User/LayoutUser";
 import LandingPages from "./Pages/LandingPages/LandingPages";
-import { AuthProvider, useAuth } from "./Context/AuthContext.jsx";
+import { AuthProvider } from "./Context/AuthContext.jsx";
+import Cookies from "js-cookie";
 
 function App() {
-  const PrivateRouteAdmin = (props) => {
-    const { isLogin } = useAuth();
-    if (!isLogin) {
-      return <Navigate to="/login" />;
-    } else if (isLogin) {
-      return props.children;
+  const PrivateRouteAdmin = ({ element }) => {
+    const isLoginFromCookie = Cookies.get("isLogin") === "true";
+    const roleFromCookie = Cookies.get("role");
+
+    if (isLoginFromCookie && roleFromCookie === "admin") {
+      return element;
+    } else if (isLoginFromCookie) {
+      return <Navigate to="/" replace />;
+    } else {
+      return <Navigate to="/login" state={{ from: "/admin" }} replace />;
     }
   };
-  const PrivateRouteUser = (props) => {
-    const { isLogin } = useAuth();
-    if (!isLogin) {
-      return <Navigate to="/login" />;
-    } else if (isLogin) {
-      return props.children;
+
+  const PrivateRouteUser = ({ element }) => {
+    const isLoginFromCookie = Cookies.get("isLogin") === "true";
+
+    if (!isLoginFromCookie) {
+      return <Navigate to="/login" replace />;
     }
+    return element;
+  };
+
+  const LoginRoute = ({ element }) => {
+    const isLoginFromCookie = Cookies.get("isLogin") === "true";
+    const roleFromCookie = Cookies.get("role");
+
+    if (isLoginFromCookie && roleFromCookie) {
+      return <Navigate to={`/${roleFromCookie}`} replace />;
+    }
+    return element;
   };
 
   return (
@@ -30,23 +46,18 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" exact element={<LandingPages />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LoginRoute element={<Login />} />} />
+          <Route
+            path="/register"
+            element={<LoginRoute element={<Register />} />}
+          />
           <Route
             path="/admin/*"
-            element={
-              <PrivateRouteAdmin>
-                <LayoutAdmin />
-              </PrivateRouteAdmin>
-            }
+            element={<PrivateRouteAdmin element={<LayoutAdmin />} />}
           />
           <Route
             path="/*"
-            element={
-              <PrivateRouteUser>
-                <LayoutUser />
-              </PrivateRouteUser>
-            }
+            element={<PrivateRouteUser element={<LayoutUser />} />}
           />
         </Routes>
       </AuthProvider>
