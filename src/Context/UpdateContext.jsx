@@ -182,14 +182,21 @@ export const UpdateProvider = (props) => {
     e.preventDefault();
     try {
       const response = await axiosJwt.patch(
-        `/user/change-password/${userId}`,
-        changePassword
+        "/user/change-password/",
+        changePassword,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       return response;
     } catch (error) {
       console.error(error);
-      if (error) {
+      if (error.response && error.response.data && error.response.data.msg) {
         setMsg(error.response.data.msg);
+      } else {
+        setMsg("An error occurred while updating the password");
       }
     }
   };

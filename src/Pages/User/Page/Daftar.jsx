@@ -1,14 +1,17 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import InformasiInstansi from "../Components/InformasiInstansi";
 import InformasiSurat from "../Components/InformasiSurat";
 import { AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
+import { HiOutlineInformationCircle } from "react-icons/hi";
 import { PostContext } from "../../../Context/PostContext";
 import Title from "../../../Components/Title";
 import SubTitle from "../../../Components/SubTitle";
 import Button from "../../../Components/Button";
 import TextInput from "../../../Components/TextInput";
+import { Modal } from "flowbite-react";
 
 const Daftar = () => {
+  const [openModal, setOpenModal] = useState(false);
   const { handlePost, statePost } = useContext(PostContext);
 
   const {
@@ -18,6 +21,9 @@ const Daftar = () => {
     setNewPelamar,
     msgFile,
     msg,
+    setMsg,
+    setMsgForm,
+    setMsgFile,
     msgForm,
   } = statePost;
   const { instansi, pelamar, surat } = inputPengajuan;
@@ -29,6 +35,17 @@ const Daftar = () => {
       ...prevInputPengajuan,
       instansi: data,
     }));
+  };
+
+  const reset = () => {
+    setMsg("");
+    setMsgForm("");
+    setMsgFile("");
+  };
+
+  const closeModal = () => {
+    setMsgForm("");
+    setOpenModal(false);
   };
 
   const setSuratData = (data) => {
@@ -188,19 +205,51 @@ const Daftar = () => {
         ""
       )}
       <div className="mt-5">
-        <p className="text-center text-error mt-5 mb-5 font-bold font-roboto">
-          {msgForm}
-        </p>
         <Button
           bgColor="bg-green-700"
           paddingY="py-3"
           paddingX="px-2"
           style="w-full"
           textColor="text-white text-2xl font-medium"
-          onClick={daftar}
+          onClick={() => setOpenModal(true)}
         >
           Simpan Data
         </Button>
+        <Modal show={openModal} size="md" onClose={closeModal} popup>
+          <Modal.Header />
+          <Modal.Body>
+            <div className="flex justify-center">
+              <HiOutlineInformationCircle size="50px" />
+            </div>
+            <p className="text-center text-error mt-5 mb-5 font-bold font-roboto">
+              {msgForm}
+            </p>
+            <p className="mt-3 text-justify font-lato">
+              Apakah Anda yakin ingin menyimpan data pengajuan magang ini?
+              Pastikan bahwa semua informasi telah diperiksa dengan cermat
+            </p>
+            <div className="flex justify-end mt-5 gap-5">
+              <Button
+                bgColor="bg-blue-800"
+                paddingY="py-1"
+                paddingX="px-3"
+                textColor="text-white text-lg font-medium font-lato"
+                onClick={daftar}
+              >
+                Simpan
+              </Button>
+              <Button
+                bgColor="bg-blue-500"
+                paddingY="py-1"
+                paddingX="px-4"
+                textColor="text-white text-lg font-medium font-lato"
+                onClick={closeModal}
+              >
+                Batal
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
     </>
   );
