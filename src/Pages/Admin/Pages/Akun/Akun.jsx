@@ -10,9 +10,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Pagination from "../../../../Components/Pagination";
 import TambahAkun from "./TambahAkun";
-import EditAkun from "./EditAkun";
 import { DeleteContext } from "../../../../Context/DeleteContext";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 const Akun = () => {
   const { handleGet, stateGet } = useContext(GetContext);
@@ -27,10 +27,7 @@ const Akun = () => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalDelete, setOpenModalDelete] = useState(false);
 
-  const handleEditClick = (userId) => {
-    setOpenModalEdit(true);
-    setSelectedUserId(userId);
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     getDataUser();
@@ -70,16 +67,18 @@ const Akun = () => {
       accessor: "id",
       Cell: ({ value }) => (
         <div className="flex items-center justify-center space-x-4">
-          <Button
-            bgColor="bg-primary-blue"
-            style="w-20"
-            paddingY="py-2"
-            paddingX="px-4"
-            textColor="text-netral-white"
-            onClick={() => handleEditClick(value)}
-          >
-            Edit
-          </Button>
+          <Link to={`/admin/akun/edit/${value}`}>
+            <Button
+              navigate={`/admin/akun/edit/${value}`}
+              bgColor="bg-primary-blue"
+              style="w-20"
+              paddingY="py-2"
+              paddingX="px-4"
+              textColor="text-netral-white"
+            >
+              Edit
+            </Button>
+          </Link>
           <Button
             bgColor="bg-error"
             paddingY="py-2"
@@ -116,12 +115,7 @@ const Akun = () => {
           {openModalTambah && (
             <TambahAkun close={() => setOpenModalTambah(false)} />
           )}
-          {openModalEdit && (
-            <EditAkun
-              close={() => setOpenModalEdit(false)}
-              idUser={selectedUserId}
-            />
-          )}
+
         </div>
         <ToastContainer />
         <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import Logo from "../../assets/Logo Diskominfo Jabar.png";
 import Shape from "../../assets/Shape.png";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const { login, msg } = useAuth();
@@ -69,6 +71,7 @@ const Login = () => {
           />
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

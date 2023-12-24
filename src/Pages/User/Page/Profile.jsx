@@ -165,7 +165,7 @@ const Profile = () => {
             paddingX="px-4"
             style="w-20"
             textColor="text-blue-800"
-            onClick={close}
+            onClick={closeModal}
           >
             Batal
           </Button>

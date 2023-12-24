@@ -31,13 +31,10 @@ const Register = () => {
         "http://localhost:8000/api/register",
         register
       );
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
       if (response.status === 201) {
         toast.success(response.data.msg, {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 5000,
           hideProgressBar: true,
           closeOnClick: true,
           pauseOnHover: true,
@@ -45,6 +42,7 @@ const Register = () => {
           progress: undefined,
           theme: "colored",
         });
+        navigate("/login");
       }
     } catch (error) {
       console.error(error);

@@ -7,6 +7,8 @@ import LayoutUser from "./Pages/User/LayoutUser";
 import LandingPages from "./Pages/LandingPages/LandingPages";
 import { AuthProvider } from "./Context/AuthContext.jsx";
 import Cookies from "js-cookie";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const PrivateRouteAdmin = ({ element }) => {
@@ -44,6 +46,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastContainer />
         <Routes>
           <Route path="/" exact element={<LandingPages />} />
           <Route path="/login" element={<LoginRoute element={<Login />} />} />

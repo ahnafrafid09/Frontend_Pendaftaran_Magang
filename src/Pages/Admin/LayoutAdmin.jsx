@@ -16,7 +16,7 @@ import Akun from "./Pages/Akun/Akun";
 import { PostProvider } from "../../Context/PostContext";
 import { UpdateProvider } from "../../Context/UpdateContext";
 import { DeleteProvider } from "../../Context/DeleteContext";
-import { useAuth } from "../../Context/AuthContext";
+import EditAkunP from "./Pages/Akun/EditAkunP";
 
 const LayoutAdmin = () => {
   const [isSidebarClose, setSidebarClose] = useState(false);
@@ -48,6 +48,10 @@ const LayoutAdmin = () => {
                       <Route path="/pengajuan" element={<Pengajuan />} />
                       <Route path="/magang" element={<Magang />} />
                       <Route path="/akun" element={<Akun />} />
+                      <Route
+                        path="/akun/edit/:userId"
+                        element={<EditAkunP />}
+                        />
                       <Route path="/history" element={<HistoryMagang />} />
                       <Route
                         path="/pengajuan/daftar"
