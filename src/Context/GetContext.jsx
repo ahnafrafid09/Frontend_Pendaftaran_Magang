@@ -447,13 +447,14 @@ export const GetProvider = (props) => {
       });
       const result = response.data;
       const { id, username, name, email, role } = result;
+      console.log(result);
       setAkun({
         user: {
-          id,
-          name,
-          email,
-          username,
-          role,
+          id: id,
+          name: name,
+          email: email,
+          username: username,
+          role: role,
         },
       });
 
@@ -480,7 +481,11 @@ export const GetProvider = (props) => {
 
   const getJumlahDaftar = async () => {
     try {
-      const response = await axiosJwt.get("/admin/jumlah-daftar");
+      const response = await axiosJwt.get("/admin/jumlah-daftar", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = response.data;
       setJumlah(data);
     } catch (error) {

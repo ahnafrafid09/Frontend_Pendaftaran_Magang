@@ -6,7 +6,7 @@ import Cookies from "js-cookie";
 
 const Beranda = () => {
   const currentYear = new Date().getFullYear();
-
+ 
   const isLoginFromCookie = Cookies.get("isLogin") === "true";
   const roleFromCookie = Cookies.get("role");
 

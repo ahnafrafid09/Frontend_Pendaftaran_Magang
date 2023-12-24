@@ -178,7 +178,7 @@ export const UpdateProvider = (props) => {
     }
   };
 
-  const updatePassword = async (e, userId) => {
+  const updatePassword = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosJwt.patch(
