@@ -37,8 +37,6 @@ Dan juga sudah clone repo [Backend](https://github.com/ahnafrafid09/Backend_Apli
 
 Jika aplikasi ini akan di production maka dapat menjalankan command berikut:
 
-    ```bash
     npm run build
-    ```
 
 Setelah itu akan menghasilkan folder dist
