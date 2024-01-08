@@ -16,6 +16,8 @@ import Akun from "./Pages/Akun/Akun";
 import { PostProvider } from "../../Context/PostContext";
 import { UpdateProvider } from "../../Context/UpdateContext";
 import { DeleteProvider } from "../../Context/DeleteContext";
+import EditAkunP from "./Pages/Akun/EditAkunP";
+import TambahAkun from "./Pages/Akun/TambahAkun";
 import EditAkun from "./Pages/Akun/EditAkun";
 
 const LayoutAdmin = () => {
@@ -48,10 +50,8 @@ const LayoutAdmin = () => {
                       <Route path="/pengajuan" element={<Pengajuan />} />
                       <Route path="/magang" element={<Magang />} />
                       <Route path="/akun" element={<Akun />} />
-                      <Route
-                        path="/akun/edit/:userId"
-                        element={<EditAkun />}
-                        />
+                      <Route path="/akun/edit/:userId" element={<EditAkun />} />
+                      <Route path="/akun/tambah" element={<TambahAkun />} />
                       <Route path="/history" element={<HistoryMagang />} />
                       <Route
                         path="/pengajuan/daftar"

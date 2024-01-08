@@ -98,18 +98,12 @@ const Akun = () => {
       <Title>Manajemen Akun</Title>
       <div className="mt-6">
         <div className="w-full flex justify-end pr-6">
-          <Link>
-            <button
-              className="flex items-center gap-2 bg-primary-blue text-white py-2.5 px-4 rounded-lg "
-              onClick={() => setOpenModalTambah(true)}
-            >
+          <Link to="/admin/akun/tambah">
+            <button className="flex items-center gap-2 bg-primary-blue text-white py-2.5 px-4 rounded-lg ">
               <AiOutlinePlus />
               <h1 className="hidden md:block">Tambah Akun</h1>
             </button>
           </Link>
-          {openModalTambah && (
-            <TambahAkun close={() => setOpenModalTambah(false)} />
-          )}
         </div>
         <ToastContainer />
         <div className="bg-blue-50 mt-5 mb-8 border-t-4 border-primary-blue rounded p-6">

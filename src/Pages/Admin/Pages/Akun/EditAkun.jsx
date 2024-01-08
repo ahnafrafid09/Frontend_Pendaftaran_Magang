@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
-import { Modal } from "flowbite-react";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import TextInput from "../../../../Components/TextInput";
 import DropdownInput from "../../../../Components/DropdownInput";
 import Button from "../../../../Components/Button";
-import { PostContext } from "../../../../Context/PostContext";
 import { GetContext } from "../../../../Context/GetContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { UpdateContext } from "../../../../Context/UpdateContext";
 import Title from "../../../../Components/Title";
@@ -58,11 +58,19 @@ const EditAkun = () => {
   };
 
   const handleUpdateUser = async (e) => {
-    e.preventDefault();
     try {
-      const response = await updateUser(e, id);
+      const response = await updateUser(e, userId);
       if (response.status === 200) {
-        close();
+        toast.success(response.data.msg, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     } catch (error) {
       console.error(error);
@@ -72,6 +80,7 @@ const EditAkun = () => {
   return (
     <>
       <Title>Edit Akun</Title>
+      <ToastContainer />
       <div className="flex justify-start items-center mt-5">
         <Button
           textColor="text-white"
@@ -86,71 +95,70 @@ const EditAkun = () => {
           Kembali
         </Button>
       </div>
-      <div className="mt-10 w-full justify-items-center grid md:grid-cols-3 gap-5 sm:grid-cols-2 grid-cols-1">
-        <TextInput
-          label="Nama"
-          id="name"
-          value={name}
-          onChange={handleChangeInput}
-        />
-        <TextInput
-          label="Username"
-          id="username"
-          value={username}
-          onChange={handleChangeInput}
-        />
-        <TextInput
-          label="Email"
-          id="email"
-          value={email}
-          onChange={handleChangeInput}
-        />
-        <DropdownInput
-          options={["Admin", "User"]}
-          title="Pilih Role"
-          label="Pilih Role:"
-          id="role"
-          value={role.charAt(0).toUpperCase() + role.slice(1)}
-          handleChange={handleChangeInput}
-        />
-        <TextInput
-          label="New Password"
-          type="password"
-          id="newPassword"
-          value={newPassword}
-          onChange={handleChangeInput}
-          placeHolder="*********"
-        />
-        <TextInput
-          label="Konfirmasi Password"
-          type="password"
-          id="confNewPassword"
-          value={confNewPassword}
-          placeHolder="*********"
-          onChange={handleChangeInput}
-        />
-      </div>
-      <div className="flex gap-5 justify-end items-center mt-20">
-        <Button
-          bgColor="bg-primary-blue"
-          paddingY="py-2"
-          paddingX="px-4"
-          style="w-20"
-          textColor="text-netral-white"
-          onClick={handleUpdateUser}
-        >
-          Simpan
-        </Button>
-        <Button
-          bgColor="bg-blue-200"
-          paddingY="py-2"
-          paddingX="px-4"
-          style="w-20"
-          textColor="text-blue-800"
-          onClick={close}
-        >
-          Batal
-        </Button>
+      <div className="bg-blue-50 mt-5 rounded py-6 px-4 md:px-8 ">
+        <p className="text-center text-error font-semibold">{msg}</p>
+        <div className="mx-auto md:mx-0 sm:w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-4 justify-items-center md:justify-items-stretch">
+          <div className="md:col-span-3 md:flex md:justify-between gap-5 mb-6">
+            <TextInput
+              label="Nama"
+              id="name"
+              value={name}
+              style="mb-5"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Username"
+              id="username"
+              value={username}
+              style="mb-5"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Email"
+              id="email"
+              value={email}
+              onChange={handleChangeInput}
+            />
+          </div>
+          <div className="md:col-span-3 md:flex md:justify-between gap-5 mb-6">
+            <DropdownInput
+              options={["Admin", "User"]}
+              title="Pilih Role"
+              label="Pilih Role:"
+              id="role"
+              className="mb-5"
+              value={role.charAt(0).toUpperCase() + role.slice(1)}
+              handleChange={handleChangeInput}
+            />
+            <TextInput
+              label="Password Baru"
+              type="password"
+              id="newPassword"
+              value={newPassword}
+              style="mb-5"
+              onChange={handleChangeInput}
+            />
+            <TextInput
+              label="Konfirmasi Password"
+              type="password"
+              id="confNewPassword"
+              value={confNewPassword}
+              onChange={handleChangeInput}
+            />
+          </div>
+        </div>
+        <div className=" flex justify-end mb-6 mt-6">
+          <Button
+            bgColor="bg-primary-blue"
+            paddingY="py-2"
+            paddingX="px-4"
+            style="w-20"
+            textColor="text-netral-white"
+            onClick={handleUpdateUser}
+          >
+            Simpan
+          </Button>
+        </div>
       </div>
     </>
   );

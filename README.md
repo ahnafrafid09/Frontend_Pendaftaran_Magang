@@ -1,8 +1,44 @@
-# React + Vite
+# Frontend Pendaftaran Magang Diskominfo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ini adalah frontend untuk aplikasi pendaftaran magang Diskominfo
 
-Currently, two official plugins are available:
+## Instalasi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Pastikan Anda memiliki [Node.js](https://nodejs.org/) dan [npm](https://www.npmjs.com/) diinstal sebelum memulai.
+Dan juga sudah clone repo [Backend](https://github.com/ahnafrafid09/Backend_Aplikasi_Pendaftaran_Magang)
+
+1. Clone repositori ini.
+
+   ```bash
+   git clone https://github.com/ahnafrafid09/Frontend_Pendaftaran_Magang.git
+
+   ```
+
+2. Masuk kedalam folder projek ini tersimpan
+
+   ```bash
+   cd Frontend_Pendaftaran_Magang
+
+   ```
+
+3. Melakukan installasi
+
+   ```bash
+   npm install
+
+   ```
+
+4. Menjalankan aplikasi
+   ```bash
+   npm run dev
+   ```
+
+## Production
+
+Jika aplikasi ini akan di production maka dapat menjalankan command berikut:
+
+    ```bash
+    npm run build
+    ```
+
+Setelah itu akan menghasilkan folder dist

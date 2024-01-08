@@ -7,7 +7,7 @@ const DropdownInput = (props) => {
       <label className="font-bold font-lato">{props.label}</label>
       <select
         id={props.id}
-        className="w-64 bg-transparent h-10 border border-black rounded-md px-4"
+        className={`${props.className} w-64 bg-transparent h-10 border border-black rounded-md px-4`}
         value={props.value}
         onChange={props.handleChange}
       >
